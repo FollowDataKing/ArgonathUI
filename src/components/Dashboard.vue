@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <Row
       v-for="row in rows"
-      :columns="row.columns">
+      :model="row">
     </Row>
    <hr>
    <p class="small text-muted">This is a status bar</a></p>
@@ -26,20 +26,20 @@
                 width: 3,
                 rows: [
                   {
-                    columns: {
+                    columns: [{
                       width: 12,
                       widget: {
-                        height: 200
+                        height: 120
                       }
-                    }
+                    }]
                   },
                   {
-                    columns: {
+                    columns: [{
                       width: 12,
                       widget: {
-                        height: 200
+                        height: 120
                       }
-                    }
+                    }]
                   }
                 ]
               },
@@ -53,20 +53,20 @@
                 width: 3,
                 rows: [
                   {
-                    columns: {
+                    columns: [{
                       width: 12,
                       widget: {
-                        height: 200
+                        height: 120
                       }
-                    }
+                    }]
                   },
                   {
-                    columns: {
+                    columns: [{
                       width: 12,
                       widget: {
-                        height: 200
+                        height: 120
                       }
-                    }
+                    }]
                   }
                 ]
               },
@@ -77,13 +77,13 @@
               {
                 width: 6,
                 widget: {
-                  height: 200
+                  height: 120
                 }
               },
               {
                 width: 6,
                 widget: {
-                  height: 200
+                  height: 120
                 }
               }
             ]

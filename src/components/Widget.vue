@@ -1,13 +1,13 @@
 <template>
     <div class="chart-wrapper">
       <div class="chart-title">
-        This is a sample title of widget #{{ index }}
+        Title of this widget
       </div>
       <div class="chart-stage">
         <img data-src="holder.js/100%x{{ height }}/white">
       </div>
       <div class="chart-notes">
-        This is a sample text region to describe widget #{{index}}.
+        Notes about this widget
       </div>
     </div>
 </template>
@@ -15,13 +15,14 @@
 <script>
 export default {
   props: {
-    height: {
-      type: Number,
-      default: 120
+    model: Object
+  },
+  computed: {
+    height: function () {
+      return this.model.height || 120
     },
-    index: {
-      type: Number,
-      default: 1
+    index: function () {
+      return 1
     }
   }
 }

@@ -1,64 +1,52 @@
 <template>
   <div class="col-sm-{{ width }}">
     <div v-if="rows && rows.length > 0">
-      <Row
+      <inner-row
         v-for="row in rows"
-        :columns="row.columns">
-      </Row>
+        :model="row">
+      </inner-row>
     </div>
     <Widget v-else
-      :height="widget.height">
+      :model="widget">
     </Widget>
   </div>
 </template>
 
 <script>
-import Row from "./Row.vue"
+// import Row from "./Row.vue"
+import InnerRow from "./InnerRow.vue"
 import Widget from "./Widget.vue"
 
 export default {
   name: "Column",
 
   components: {
-    Row,
+    // Row,
+    InnerRow,
     Widget
   },
 
-  // props () {
-  //   return {
-  //   width: {
-  //     type: Number,
-  //     default: 12
-  //   },
-  //   rows: {
-  //     type: Array,
-  //     default: []
-  //   },
-  //   widget: {
-  //     type: Object,
-  //     default: undefined
-  //   }
-  // }
-  // },
+  props:{
+    model: Object
+  },
 
-  props : {
-    width: {
-      type: Number,
-      default: 12
+  computed: {
+    width: function () {
+      return this.model.width || 12
     },
-    rows: {
-      type: Array,
-      default: function () {[]}
+    rows: function () {
+      return this.model.rows || []
     },
-    widget: {
-      type: Object,
-      default: function () {undefined}
+    widget: function () {
+      return this.model.widget
     }
   },
 
   ready() {
-    console.log(this.rows)
-  }
+    console.log("------------------------")
+    console.log(this.model)
+    console.log("------------------------")
+  },
 }
 </script>
 

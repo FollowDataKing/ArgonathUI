@@ -1,20 +1,20 @@
 <template>
   <div class="row">
-    <Column
+    <inner-column
       v-for="column in columns"
       :model="column">
-    </Column>
+    </inner-column>
   </div>
 </template>
 
 <script>
-import Column from "./Column.vue"
+import InnerColumn from "./InnerColumn.vue"
 
 export default {
-  name: "Row",
+  name: "InnerRow",
 
   components: {
-    Column
+    InnerColumn
   },
 
   props: {
