@@ -1,20 +1,20 @@
 <template>
   <div class="container-fluid">
-    <Row
+    <Container
       v-for="row in rows"
       :model="row">
-    </Row>
+    </Container>
    <hr>
    <p class="small text-muted">This is a status bar</a></p>
  </div>
 </template>
 
 <script>
-  import Row from "./Row.vue"
+  import Container from "./Container.vue"
 
   export default {
     components: {
-      Row
+      Container
     },
 
     data () {
@@ -26,20 +26,24 @@
                 width: 3,
                 rows: [
                   {
-                    columns: [{
-                      width: 12,
-                      widget: {
-                        height: 120
+                    columns: [
+                      {
+                        width: 12,
+                        widget: {
+                          height: 120
+                        }
                       }
-                    }]
+                    ]
                   },
                   {
-                    columns: [{
-                      width: 12,
-                      widget: {
-                        height: 120
+                    columns: [
+                      {
+                        width: 12,
+                        widget: {
+                          height: 120
+                        }
                       }
-                    }]
+                    ]
                   }
                 ]
               },
@@ -53,20 +57,24 @@
                 width: 3,
                 rows: [
                   {
-                    columns: [{
-                      width: 12,
-                      widget: {
-                        height: 120
+                    columns: [
+                      {
+                        width: 12,
+                        widget: {
+                          height: 120
+                        }
                       }
-                    }]
+                    ]
                   },
                   {
-                    columns: [{
-                      width: 12,
-                      widget: {
-                        height: 120
+                    columns: [
+                      {
+                        width: 12,
+                        widget: {
+                          height: 120
+                        }
                       }
-                    }]
+                    ]
                   }
                 ]
               },
@@ -92,7 +100,7 @@
       }
     },
   }
-</script>
+  </script>
 
-<style>
-</style>
+  <style>
+  </style>

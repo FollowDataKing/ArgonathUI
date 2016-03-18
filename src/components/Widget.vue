@@ -19,6 +19,8 @@ export default {
   },
   computed: {
     height: function () {
+      console.log("---Widget---")
+      console.log(this.model)
       return this.model.height || 120
     },
     index: function () {
