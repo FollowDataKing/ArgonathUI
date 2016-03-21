@@ -2,7 +2,8 @@
   <div class="container-fluid">
     <Container
       v-for="row in rows"
-      :model="row">
+      :model="row"
+      :id="'' + $index">
     </Container>
    <hr>
    <p class="small text-muted">This is a status bar</a></p>
@@ -23,75 +24,10 @@
           {
             columns: [
               {
-                width: 3,
-                rows: [
-                  {
-                    columns: [
-                      {
-                        width: 12,
-                        widget: {
-                          height: 120
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    columns: [
-                      {
-                        width: 12,
-                        widget: {
-                          height: 120
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                width: 6,
+                width: 12,
                 widget: {
-                  height: 325
-                }
-              },
-              {
-                width: 3,
-                rows: [
-                  {
-                    columns: [
-                      {
-                        width: 12,
-                        widget: {
-                          height: 120
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    columns: [
-                      {
-                        width: 12,
-                        widget: {
-                          height: 120
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-            ]
-          },
-          {
-            columns: [
-              {
-                width: 6,
-                widget: {
-                  height: 120
-                }
-              },
-              {
-                width: 6,
-                widget: {
-                  height: 120
+                  height: 200,
+                  type: "table"
                 }
               }
             ]

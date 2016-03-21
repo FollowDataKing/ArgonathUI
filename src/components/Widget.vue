@@ -1,31 +1,130 @@
 <template>
     <div class="chart-wrapper">
       <div class="chart-title">
-        Title of this widget
+        Title of widget #{{id}}
       </div>
-      <div class="chart-stage">
-        <img data-src="holder.js/100%x{{ height }}/white">
+      <div :id="'w-' + id" class="chart-stage">
+        <!-- <img v-if="type == 'placeholder'" data-src="holder.js/100%x{{ height }}/white"> -->
+        <Loading v-if="status == 'loading'"></Loading>
+        <div v-else>
+          <!-- <div id="responsive-tables">
+            <table class="col-md-12 table-bordered table-striped table-condensed cf">
+              <thead class="cf">
+          		<tr>
+                <th>{{data.dimension.label}}</th>
+                <th v-for="measure in data.measures">{{measure.label}}</th>
+          		</tr>
+          	</thead>
+          	<tbody>
+              <tr v-for="(dimidx, dimval) in data.dimension.data">
+                <td class="title" data-title="{{data.dimension.label}}">{{dimval}}</td>
+                <td v-for="measure in data.measures" data-title="{{measure.label}}">{{measure.data[dimidx]}}</td>
+              </tr>
+          	</tbody>
+          </table>
+        </div> -->
+
+        <responsive-table
+          :dimension="data.dimension"
+          :measures="data.measures">
+        </responsive-table>
+
+          <canvas v-if="type == 'chart'" id="myChart"></canvas>
+        </div>
       </div>
       <div class="chart-notes">
-        Notes about this widget
+        Notes about widget #{{id}}
       </div>
     </div>
 </template>
 
 <script>
+// import Chart from "chart.js"
+import Loading from "./particles/Loading.vue"
+import ResponsiveTable from "./particles/ResponsiveTable.vue"
+
 export default {
   props: {
-    model: Object
+    model: Object,
+    id: String
   },
+
+  data () {
+    return {
+      status: "loading",
+      scheme: {
+        alias: {
+          create_time: "日期",
+          BALANCE: "余额",
+          ALIPAY: "支付宝",
+          TENPAY: "微信",
+          TENPAY2: "微信2",
+          TOTAL: "总额"
+        },
+        dimension: "create_time",
+        measures: [ "BALANCE", "ALIPAY", "TENPAY", "TENPAY2", "TOTAL" ]
+      },
+      data: { }
+    }
+  },
+
   computed: {
     height: function () {
-      console.log("---Widget---")
-      console.log(this.model)
       return this.model.height || 120
     },
-    index: function () {
-      return 1
+    type: function() {
+      return this.model.type
     }
+  },
+
+  components: {
+    Loading,
+    ResponsiveTable
+  },
+
+  ready() {
+    // GET request
+    this.$http({url: 'http://data4:1060/statistics/query/payment', method: 'GET'})
+    .then(function (response) {
+      // success callback
+
+      var data = {
+        dimension: {
+          label: this.scheme.alias[this.scheme.dimension],
+          data: []
+        },
+        measures: {}
+      }
+
+      for (var idx in this.scheme.measures) {
+        var measure_key = this.scheme.measures[idx]
+        data.measures[measure_key] = {
+          label: this.scheme.alias[measure_key],
+          data: []
+        }
+      }
+
+      for (var idx in response.data) {
+        var item = response.data[idx]
+
+        for (var key in item) {
+          if (key == this.scheme.dimension) {
+            data.dimension.data.push(item[key])
+          }
+          else {
+            data.measures[key].data.push(item[key])
+          }
+        }
+      }
+      this.data = data
+
+      this.status = "ready"
+    }, function (response) {
+      // error callback
+      this.status = "error"
+      console.log(response)
+    });
   }
 }
+
 </script>
