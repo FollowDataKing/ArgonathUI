@@ -8,21 +8,22 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(dimidx, dimval) in dimension.data">
+        <tr v-for="(dimidx, dimval) in pagedDimensions">
           <td class="title" data-title="{{dimension.label}}">{{dimval}}</td>
-          <td v-for="measure in measures" data-title="{{measure.label}}">{{measure.data[dimidx]}}</td>
+          <td
+            v-for="measure in measures"
+            data-title="{{measure.label}}">
+            {{measure.data[dimidx + startIndex]}}
+          </td>
         </tr>
       </tbody>
     </table>
-    <!-- <Pagination :ssize="indexSize" :pages="totalPages"></Pagination> -->
-    <Pagination :pages="totalPages"></Pagination>
-    <!-- <Demo :attr="123"></Demo> -->
+    <Pagination :index-size="indexSize" :total-pages="totalPages"></Pagination>
   </div>
 </template>
 
 <script>
 import Pagination from "./Pagination.vue"
-import Demo from "./Demo.vue"
 
 export default {
   props: {
@@ -31,14 +32,37 @@ export default {
   },
 
   components: {
-    Pagination,
-    Demo
+    Pagination
   },
 
-  data() {
+  data () {
     return {
-      indexSize: 10,
-      totalPages: 23
+      itemsPerPage: 10,
+      currentPage: 1
+    }
+  },
+
+  computed: {
+    startIndex: function () {
+      return (this.currentPage - 1) * this.itemsPerPage
+    },
+
+    indexSize: function() {
+      return Math.min(10, this.totalPages)
+    },
+
+    totalPages: function() {
+      return Math.ceil(this.dimension.data.length / this.itemsPerPage)
+    },
+
+    pagedDimensions: function() {
+      return this.dimension.data.slice(this.startIndex, this.startIndex + this.itemsPerPage - 1)
+    }
+  },
+
+  events: {
+    'setPageTo': function (newPage) {
+      this.currentPage = newPage
     }
   }
 }
