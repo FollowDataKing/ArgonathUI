@@ -1,26 +1,54 @@
 <template>
-  <nav>
-      <ul class="pagination">
-        <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-        <li class="active"><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li>
-          <a href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+  <div>
+    <ul class="pagination">
+      <li :class="{ 'disabled': isPrevDisabled }"><a href="#">&laquo;</a></li>
+      <li v-for="pageIdx in pageIndexs" :class="{ 'active': isActive(pageIdx) }">
+        <a href="#">{{pageIdx}}</a>
+      </li>
+      <li :class="{ 'disabled': isNextDisabled }"><a href="#">&raquo;</a></li>
+    </ul>
+  </div>
 </tempalte>
 
 <script>
 export default {
   props: {
-    dimension: Object,
-    measures: Object
+    pages: Number
+  },
+
+  data () {
+    return {
+      currentPage: 1
+    }
+  },
+
+  computed: {
+    isPrevDisabled: function() {
+      return this.curPage == 1
+    },
+
+    isNextDisabled: function() {
+      return this.curPage == this.totalPages
+    },
+
+    isActive: function(pageIdx) {
+      return pageIdx == this.currentPage
+    },
+
+    pageIndexs: function() {
+      var range = (start, count) => [...Array(count)].map((_, i) => start + i)
+      var indexStart = Math.floor((this.currentPage - 1) / this.indexSize) + 1
+      return range(indexStart, this.indexSize)
+    }
+  }
+
+  methods: {
+    setPageTo: function (pageIdx) {
+      if (pageIdx != this.currentPage) {
+        this.currentPage = pageIdx
+        this.$dispatch('setPageTo', this.currentPage)
+      }
+    }
   }
 }
 </script>

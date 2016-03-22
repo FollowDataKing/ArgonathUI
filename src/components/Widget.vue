@@ -1,41 +1,23 @@
 <template>
-    <div class="chart-wrapper">
-      <div class="chart-title">
-        Title of widget #{{id}}
-      </div>
-      <div :id="'w-' + id" class="chart-stage">
-        <!-- <img v-if="type == 'placeholder'" data-src="holder.js/100%x{{ height }}/white"> -->
-        <Loading v-if="status == 'loading'"></Loading>
-        <div v-else>
-          <!-- <div id="responsive-tables">
-            <table class="col-md-12 table-bordered table-striped table-condensed cf">
-              <thead class="cf">
-          		<tr>
-                <th>{{data.dimension.label}}</th>
-                <th v-for="measure in data.measures">{{measure.label}}</th>
-          		</tr>
-          	</thead>
-          	<tbody>
-              <tr v-for="(dimidx, dimval) in data.dimension.data">
-                <td class="title" data-title="{{data.dimension.label}}">{{dimval}}</td>
-                <td v-for="measure in data.measures" data-title="{{measure.label}}">{{measure.data[dimidx]}}</td>
-              </tr>
-          	</tbody>
-          </table>
-        </div> -->
-
+  <div class="chart-wrapper">
+    <div class="chart-title">
+      Title of widget #{{id}}
+    </div>
+    <div :id="'w-' + id" class="chart-stage">
+      <!-- <img v-if="type == 'placeholder'" data-src="holder.js/100%x{{ height }}/white"> -->
+      <Loading v-if="status == 'loading'"></Loading>
+      <div v-else>
         <responsive-table
           :dimension="data.dimension"
           :measures="data.measures">
         </responsive-table>
-
-          <canvas v-if="type == 'chart'" id="myChart"></canvas>
-        </div>
-      </div>
-      <div class="chart-notes">
-        Notes about widget #{{id}}
+        <canvas v-if="type == 'chart'" id="myChart"></canvas>
       </div>
     </div>
+    <div class="chart-notes">
+      Notes about widget #{{id}}
+    </div>
+  </div>
 </template>
 
 <script>

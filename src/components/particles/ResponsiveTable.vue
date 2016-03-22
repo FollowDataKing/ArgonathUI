@@ -2,25 +2,44 @@
   <div id="responsive-tables">
     <table class="col-md-12 table-bordered table-striped table-condensed cf">
       <thead class="cf">
-      <tr>
-        <th>{{dimension.label}}</th>
-        <th v-for="measure in measures">{{measure.label}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(dimidx, dimval) in dimension.data">
-        <td class="title" data-title="{{dimension.label}}">{{dimval}}</td>
-        <td v-for="measure in measures" data-title="{{measure.label}}">{{measure.data[dimidx]}}</td>
-      </tr>
-    </tbody>
-  </table>
+        <tr>
+          <th>{{dimension.label}}</th>
+          <th v-for="measure in measures">{{measure.label}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(dimidx, dimval) in dimension.data">
+          <td class="title" data-title="{{dimension.label}}">{{dimval}}</td>
+          <td v-for="measure in measures" data-title="{{measure.label}}">{{measure.data[dimidx]}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <Pagination :ssize="indexSize" :pages="totalPages"></Pagination> -->
+    <Pagination :pages="totalPages"></Pagination>
+    <!-- <Demo :attr="123"></Demo> -->
+  </div>
 </template>
 
 <script>
+import Pagination from "./Pagination.vue"
+import Demo from "./Demo.vue"
+
 export default {
   props: {
     dimension: Object,
     measures: Object
+  },
+
+  components: {
+    Pagination,
+    Demo
+  },
+
+  data() {
+    return {
+      indexSize: 10,
+      totalPages: 23
+    }
   }
 }
 </script>
