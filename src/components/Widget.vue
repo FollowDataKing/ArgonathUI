@@ -8,6 +8,7 @@
       <Loading v-if="status == 'loading'"></Loading>
       <div v-else>
         <!-- <path-nav :path="['Home', 'Library', 'Data']"></path-nav> -->
+        <filter-panel :options="['foo', 'bar']" :placeholder="placeholder"></filter-panel>
         <responsive-table
           :columns="columns"
           :records="data">
@@ -26,6 +27,7 @@
 import Loading from "./particles/Loading.vue"
 import ResponsiveTable from "./particles/ResponsiveTable.vue"
 import PathNav from "./particles/PathNav.vue"
+import FilterPanel from "./particles/FilterPanel.vue"
 
 export default {
   props: {
@@ -84,7 +86,8 @@ export default {
   components: {
     Loading,
     ResponsiveTable,
-    PathNav
+    PathNav,
+    FilterPanel
   },
 
   ready() {
