@@ -1,19 +1,23 @@
 <template>
-  <div class="row" v-if="columns.length > 0">
+  <div :id="'r-' + id" class="row" v-if="columns.length > 0">
     <Container
       v-for="column in columns"
-      :model="column">
+      :model="column"
+      :id="id + '-' + $index">
     </Container>
   </div>
-  <div class="col-sm-{{ width }}" v-else>
+  <div :id="'c-' + id" class="col-sm-{{ width }}" v-else>
     <div v-if="rows.length > 0">
       <Container
         v-for="row in rows"
-        :model="row">
+        :model="row"
+        :id="id + '-' + $index">
       </Container>
     </div>
     <div v-if="widget">
-      <Widget :model="widget">
+      <Widget
+        :model="widget"
+        :id="id">
       </Widget>
     </div>
   </div>
@@ -30,31 +34,20 @@ export default {
   },
 
   props: {
-    model: Object
+    model: Object,
+    id: String
   },
 
   computed: {
     columns: function () {
-      if (this.model.columns) {
-        console.log("---Row---")
-        console.log(this.model)
-      }
       return this.model.columns || []
     },
 
     rows: function () {
-      if (this.model.rows) {
-        console.log("---Column---")
-        console.log(this.model)
-      }
       return this.model.rows || []
     },
 
     widget: function () {
-      if (this.model.widget) {
-        console.log("---Widget-Column---")
-        console.log(this.model)
-      }
       return this.model.widget
     },
 

@@ -23,3 +23,7 @@ function pluralize(time, label) {
 
     return time + label + 's';
 }
+
+function colorstr(scheme, trans) {
+  return "rgba(" + scheme.join(", ") + ", " + trans + ")"
+}
