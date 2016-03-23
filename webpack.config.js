@@ -44,7 +44,7 @@ module.exports = {
         loader: 'babel'
       },
       {
-        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        test: /\.(png|woff|woff2|eot|ttf|svg|jpg)\??.*$/,
         loader: 'url',
         query: {
           limit: 10000,

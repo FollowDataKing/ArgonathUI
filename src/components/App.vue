@@ -1,48 +1,38 @@
 <template>
-
-  <div class="application">
-
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-          </a>
-          <a class="navbar-brand" href="./">Agornath UI</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-left">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Team</a></li>
-            <li><a href="#">Source</a></li>
-            <li><a href="#">Community</a></li>
-            <li><a href="#">Technical Support</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
+  <div class="wrapper">
+    <Dheader></Dheader>
+    <Sider></Sider>
+    <Content></Content>
+    <Dfooter></Dfooter>
     <!-- main view -->
-    <router-view
+    <!--router-view
       class="view"
       keep-alive
       transition
       transition-mode="out-in">
-    </router-view>
+    </router-view-->
   </div>
 </template>
 
 <script>
   // load bootstrap css from node_modules
-  //require("bootstrap/dist/css/bootstrap.css")
-
+  require("bootstrap/dist/css/bootstrap.css")
+  require("font-awesome/css/font-awesome.min.css")
+  require("ionicons/dist/css/ionicons.min.css")
+  require("admin-lte/dist/css/AdminLTE.css")
+  require("admin-lte/dist/css/skins/skin-blue.min.css")
   // activiate the bootstrap.js
+  import "jquery"
   import "bootstrap"
+  import "admin-lte/dist/js/app.min.js"
+  // load components
+  import Dheader from "./Header.vue"
+  import Sider from "./Sider.vue"
+  import Content from "./Content.vue"
+  import Dfooter from "./Footer.vue"
+  export default {
+    components: {Dheader, Sider, Content, Dfooter}
+  }
 </script>
 
 <style>
@@ -51,7 +41,7 @@
  * Full-page application style
  */
 
-#app.application,
+/*#app.application,
 .keen-dashboard {
   background: #f2f2f2;
   font-family: 'Gotham Rounded SSm A', 'Gotham Rounded SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -143,5 +133,5 @@
   color: #808080;
   font-size: 12px;
   padding: 8px 10px 5px;
-}
+}*/
 </style>

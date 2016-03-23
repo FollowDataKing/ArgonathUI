@@ -25,7 +25,7 @@
 // import Chart from "chart.js"
 import Loading from "./particles/Loading.vue"
 import ResponsiveTable from "./particles/ResponsiveTable.vue"
-import PathNav from "./particles/PathNav.vue"
+//import PathNav from "./particles/PathNav.vue"
 
 export default {
   props: {
@@ -84,7 +84,7 @@ export default {
   components: {
     Loading,
     ResponsiveTable,
-    PathNav
+    //PathNav
   },
 
   ready() {
