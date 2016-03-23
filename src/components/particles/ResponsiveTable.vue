@@ -3,17 +3,16 @@
     <table class="col-md-12 table-bordered table-striped table-condensed cf">
       <thead class="cf">
         <tr>
-          <th>{{dimension.label}}</th>
-          <th v-for="measure in measures">{{measure.label}}</th>
+          <th v-for="column in columns">{{column.label}}</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(dimidx, dimval) in pagedDimensions">
-          <td class="title" data-title="{{dimension.label}}">{{dimval}}</td>
+        <tr v-for="(recordIdx, record) in pagedRecords">
           <td
-            v-for="measure in measures"
-            data-title="{{measure.label}}">
-            {{measure.data[dimidx + startIndex]}}
+            v-for="column in columns"
+            data-title="{{column.label}}"
+            @dblclick="dblclicked(column, record)">
+            {{record[column.key]}}
           </td>
         </tr>
       </tbody>
@@ -27,8 +26,16 @@ import Pagination from "./Pagination.vue"
 
 export default {
   props: {
-    dimension: Object,
-    measures: Object
+    columns: Array,
+    records: Array,
+    itemsPerPage: {
+      type: Number,
+      default: 10
+    },
+    maxIndexSize: {
+      type: Number,
+      default: 8
+    }
   },
 
   components: {
@@ -37,7 +44,6 @@ export default {
 
   data () {
     return {
-      itemsPerPage: 10,
       currentPage: 1
     }
   },
@@ -48,21 +54,28 @@ export default {
     },
 
     indexSize: function() {
-      return Math.min(10, this.totalPages)
+      return Math.min(this.maxIndexSize, this.totalPages)
     },
 
     totalPages: function() {
-      return Math.ceil(this.dimension.data.length / this.itemsPerPage)
+      return Math.ceil(this.records.length / this.itemsPerPage)
     },
 
-    pagedDimensions: function() {
-      return this.dimension.data.slice(this.startIndex, this.startIndex + this.itemsPerPage - 1)
-    }
+    pagedRecords: function() {
+      return this.records.slice(this.startIndex, this.startIndex + this.itemsPerPage - 1)
+    },
+
   },
 
   events: {
     'setPageTo': function (newPage) {
       this.currentPage = newPage
+    }
+  },
+
+  methods: {
+    dblclicked: function(column, row) {
+      this.$dispatch('dblclickedOnTableCell', column, row)
     }
   }
 }

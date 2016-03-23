@@ -27,7 +27,11 @@
                 width: 12,
                 widget: {
                   height: 200,
-                  type: "table"
+                  type: "table",
+                  api: {
+                    proto: "http",
+                    url: "http://data4:1060/statistics/query/payment"
+                  }
                 }
               }
             ]

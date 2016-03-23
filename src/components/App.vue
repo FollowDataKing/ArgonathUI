@@ -39,11 +39,109 @@
 
 <script>
   // load bootstrap css from node_modules
-  require("bootstrap/dist/css/bootstrap.css")
-
-  // load app style from source dir
-  require("src/assets/css/keen-dashboards.css")
+  //require("bootstrap/dist/css/bootstrap.css")
 
   // activiate the bootstrap.js
   import "bootstrap"
 </script>
+
+<style>
+
+/*
+ * Full-page application style
+ */
+
+#app.application,
+.keen-dashboard {
+  background: #f2f2f2;
+  font-family: 'Gotham Rounded SSm A', 'Gotham Rounded SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  padding: 60px 20px 0;
+}
+
+#app.application > .container-fluid,
+.keen-dashboard > .container-fluid {
+  margin: 0 0 32px;
+  margin: 0 0 2rem;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+#app.application div[class^="col-"],
+.keen-dashboard div[class^="col-"] {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#app.application div[class^="col-"] div[class^="col-"],
+.keen-dashboard div[class^="col-"] div[class^="col-"] {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+#app.application hr,
+.keen-dashboard hr {
+  border-color: #d7d7d7;
+  margin: 10px 0;
+}
+
+#app.application .navbar-inverse,
+.keen-dashboard .navbar-inverse {
+  background-color: #3d4a57;
+  border-color: #333;
+}
+
+#app.application .navbar-inverse .navbar-nav > li > a,
+#app.application .navbar .navbar-brand,
+.keen-dashboard .navbar-inverse .navbar-nav > li > a,
+.keen-dashboard .navbar .navbar-brand {
+  color: #fbfbfb;
+  text-decoration: none;
+}
+
+#app.application .main-nav > li > a:hover,
+.keen-dashboard .main-nav > li > a:hover {
+  border-bottom: 2px solid transparent;
+  -webkit-transition: border 300ms ease;
+  -o-transition: border 300ms ease;
+  transition: border 300ms ease;
+  border-bottom-color: white;
+}
+
+#app.application .return-link,
+#app.application .return-link:focus,
+#app.application .return-link:hover,
+.keen-dashboard .return-link,
+.keen-dashboard .return-link:focus,
+.keen-dashboard .return-link:hover {
+  text-decoration: none;
+}
+
+
+.chart-wrapper {
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+.chart-wrapper .chart-title {
+  border-bottom: 1px solid #d7d7d7;
+  color: #666;
+  font-size: 14px;
+  font-weight: 200;
+  padding: 7px 10px 4px;
+}
+
+.chart-wrapper .chart-stage {
+  overflow: hidden;
+  padding: 5px 10px;
+  position: relative;
+}
+
+.chart-wrapper .chart-notes {
+  background: #fbfbfb;
+  border-top: 1px solid #e2e2e2;
+  color: #808080;
+  font-size: 12px;
+  padding: 8px 10px 5px;
+}
+</style>
