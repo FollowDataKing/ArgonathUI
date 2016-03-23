@@ -86,8 +86,12 @@ export default {
   components: {
     Loading,
     ResponsiveTable,
+<<<<<<< HEAD
     PathNav,
     FilterPanel
+=======
+    //PathNav
+>>>>>>> 51f3acfb422957dcd05989f1d58b860873d9ba59
   },
 
   ready() {
