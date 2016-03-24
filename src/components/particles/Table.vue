@@ -5,7 +5,7 @@
       </div>
       <!-- /.box-header -->
       <div class="box-body" id="responsive-tables">
-        <table id="example1" class="table table-bordered table-striped cf">
+        <table :id="'tab-' + id" class="table table-bordered table-striped cf">
           <thead class="cf">
             <tr>
               <th v-for="column in columns">{{column.label}}</th>
@@ -37,6 +37,7 @@ require("datatables.net")
 require("datatables.net-bs/js/dataTables.bootstrap.js")
 export default {
   props: {
+    id: String,
     columns: Array,
     records: Array,
     title:String
@@ -47,7 +48,8 @@ export default {
     }
   },
   ready () {
-    $('#example1').DataTable({
+    console.log('#tab-' + this.id)
+    $('#tab-' + this.id).DataTable({
       "paging": true,
       "lengthChange": false,
       "searching": true,

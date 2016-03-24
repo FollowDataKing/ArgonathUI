@@ -9,6 +9,7 @@
       <div v-else>
         <!-- <path-nav :path="['Home', 'Library', 'Data']"></path-nav> -->
         <Dtable
+        :id="id"
         :title="title"
         :columns="columns"
         :records="data"></Dtable>
