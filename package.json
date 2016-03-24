@@ -30,6 +30,9 @@
   "dependencies": {
     "admin-lte": "^2.3.2",
     "bootstrap": "^3.3.6",
+    "datatables.net": "^1.10.11",
+    "datatables.net-bs": "^1.10.11",
+    "daterangepicker": "0.0.3",
     "echarts": "^3.1.4",
     "es6-promise": "^3.0.2",
     "firebase": "^2.3.1",
@@ -41,6 +44,7 @@
     "moment": "^2.12.0",
     "select2": "^4.0.2",
     "vue": "^1.0.8",
+    "vue-datetime-picker": "^0.1.1",
     "vue-resource": "^0.7.0",
     "vue-router": "^0.7.5",
     "vue-select": "github:sagalbot/vue-select",
