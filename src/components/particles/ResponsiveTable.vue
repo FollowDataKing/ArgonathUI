@@ -25,6 +25,7 @@
 import Pagination from "./Pagination.vue"
 
 export default {
+  name: "ResponsiveTable",
   props: {
     columns: Array,
     records: Array,
