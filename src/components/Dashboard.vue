@@ -25,18 +25,7 @@
           {
             columns: [
               {
-                width: 6,
-                widget: {
-                  height: 200,
-                  type: "table",
-                  api: {
-                    proto: "http",
-                    url: "http://139.129.96.38:1060/statistics/query/payment"
-                  }
-                }
-              },
-              {
-                width: 6,
+                width: 12,
                 widget: {
                   height: 200,
                   type: "table",

@@ -8,6 +8,7 @@
       <Loading v-if="status == 'loading'"></Loading>
       <div v-else>
         <!-- <path-nav :path="['Home', 'Library', 'Data']"></path-nav> -->
+        <filter-editor></filter-editor>
         <Dtable
         :id="id"
         :title="title"
@@ -26,6 +27,7 @@
 // import Chart from "chart.js"
 import Loading from "./particles/Loading.vue"
 import Dtable from "./particles/Table.vue"
+import FilterEditor from "./particles/FilterEditor.vue"
 //import PathNav from "./particles/PathNav.vue"
 
 export default {
@@ -85,7 +87,8 @@ export default {
 
   components: {
     Loading,
-    Dtable
+    Dtable,
+    FilterEditor
     //PathNav
   },
 
