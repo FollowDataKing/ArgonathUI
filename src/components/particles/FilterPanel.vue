@@ -1,159 +1,57 @@
-<style scoped>
-  .dropdown {
-    position: relative;
-  }
-
-  .open .dropdown-toggle,
-  .open .dropdown-menu {
-    border-color: rgba(60,60,60,.26);
-  }
-
-  .open-indicator {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: inline-block;
-    cursor: pointer;
-    pointer-events: all;
-    transition: all 150ms cubic-bezier(1.000, -0.115, 0.975, 0.855);
-    transition-timing-function: cubic-bezier(1.000, -0.115, 0.975, 0.855);
-  }
-
-  .open .open-indicator {
-    transform: rotate(180deg);
-  }
-
-  .dropdown-toggle {
-    display: block;
-    padding: 0;
-    background: none;
-    border: 1px solid rgba(60,60,60,.26);
-    border-radius: 4px;
-    white-space: normal;
-  }
-  .searchable .dropdown-toggle {
-    cursor: text;
-  }
-
-  .open .dropdown-toggle {
-    border-bottom: none;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  .dropdown-menu {
-    margin: 0;
-    width: 100%;
-    overflow-y: scroll;
-    border-top: none;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
-
-  .selected-tag {
-    color: #333;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    height: 26px;
-    margin: 4px 1px 0px 3px;
-    padding: 0 0.25em;
-    float: left;
-    line-height: 1.7em;
-  }
-
-  .selected-tag .close {
-    float: none;
-    margin-right: 0;
-    font-size: 20px;
-  }
-
-  input[type=search],
-  input[type=search]:focus {
-    display: inline-block;
-    border: none;
-    outline: none;
-    margin: 0;
-    padding: 0 .5em;
-    width: 10em;
-    max-width: 100%;
-    background: none;
-    position: relative;
-    box-shadow: none;
-    float: left;
-    clear: none;
-  }
-
-  input[type=search]:disabled {
-    cursor: pointer;
-  }
-
-  li a {
-    cursor: pointer;
-  }
-
-  .active a {
-    background: rgba(50,50,50,.1);
-    color: #333;
-  }
-
-  .highlight a,
-  li:hover > a {
-    background: #f0f0f0;
-    color: #333;
-  }
-</style>
-
 <template>
-  <div class="dropdown" :class="dropdownClasses">
-    <div v-el:toggle @mousedown="toggleDropdown" class="dropdown-toggle clearfix" type="button">
-        <span class="form-control" v-if="!searchable && isValueEmpty">
-          {{ placeholder }}
-        </span>
+  <div class="dropdown">
+  <span class="select2 select2-container select2-container--default select2-container--above"
+    dir="ltr" style="width: 100%;">
+    <span class="select2-selectione select2-selection--multiple clearfix" aria-expanded="false">
+        <ul v-el:toggle @mousedown.prevent="toggleDropdown" class="select2-selection__rendered">
+          <li class="select2-selection__choice" v-for="option in values">
+            <span class="select2-selection__choice__remove"
+              role="presentation"
+              @click="select(option)">×</span>
+            {{ getOptionLabel(option) }}
+          </li>
+          <li class="select2-search select2-search--inline">
+            <input v-el:search v-show="searchable" v-model="search"
+            @keyup.delete="maybeDeleteValue"
+            @keyup.esc="onEscape"
+            @keyup.up.prevent="typeAheadUp"
+            @keyup.down.prevent="typeAheadDown"
+            @keyup.enter.prevent="typeAheadSelect"
+            @blur="open = false"
+            @focus="open = true"
+            :placeholder="searchPlaceholder"
+            :style="{ width: isValueEmpty ? '100%' : 'auto' }"
+            class="select2-search__field" type="search" tabindex="-1" role="textbox" style="width: 100%;">
+          </li>
+        </ul>
 
-        <span class="selected-tag" v-for="option in values">
-          {{ getOptionLabel(option) }}
-          <button @click="select(option)" type="button" class="close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </span>
+        <!-- <i v-el:open-indicator role="presentation" class="open-indicator glyphicon-triangle-bottom glyphicon"></i> -->
+    </span>
+  </span>
 
-        <input
-          v-el:search
-          v-show="searchable"
-          v-model="search"
-          @keyup.delete="maybeDeleteValue"
-          @keyup.esc="onEscape"
-          @keyup.up.prevent="typeAheadUp"
-          @keyup.down.prevent="typeAheadDown"
-          @keyup.enter.prevent="typeAheadSelect"
-          @blur="open = false"
-          @focus="open = true"
-          type="search"
-          class="form-control"
-          :placeholder="searchPlaceholder"
-          :style="{ width: isValueEmpty ? '100%' : 'auto' }"
-        >
-
-        <i v-el:open-indicator role="presentation" class="open-indicator glyphicon-chevron-down glyphicon"></i>
-    </div>
-
-    <ul v-show="open" v-el:dropdown-menu :transition="transition" :style="{ 'max-height': maxHeight }" class="dropdown-menu animated">
-        <li v-for="option in filteredOptions"
-          :class="{ active: isOptionSelected(option), highlight: $index === typeAheadPointer }"
-          @mouseover="typeAheadPointer = $index">
-          <a @mousedown.prevent="edit(option)">
+    <span v-show="open" :style="{ 'max-height': maxHeight }"
+      class="select2-container select2-container--default select2-container--open" style="position: absolute; width: 100%">
+      <span class="select2-dropdown select2-dropdown--above">
+        <span class="select2-results">
+          <ul class="select2-results__options">
+          <li v-for="option in filteredOptions"
+            class="select2-results__option"
+            :class="{ 'select2-results__option--highlighted': $index === typeAheadPointer }"
+            :aria-selected="isOptionSelected(option) ? 'true' : 'false'"
+            role="treeitem"
+            @mouseover="typeAheadPointer = $index"
+            @mousedown.prevent="select(option)">
             {{ getOptionLabel(option) }}
             <span style="float:right">{{ getOptionType(option) }}</span>
-          </a>
         </li>
-        <li transition="fade" v-if="!filteredOptions.length" class="divider"></li>
-        <li transition="fade" v-if="!filteredOptions.length" class="text-center">Sorry, no matching options.</li>
-    </ul>
+      </ul>
+    </span>
+  </span>
+</span>
 
-    <div  v-show="editingOption" :style="{ 'max-height': maxHeight }">
+    <!-- <div  v-show="editingOption" :style="{ 'max-height': maxHeight }">
       <input type="text" class="form-control"></input></li>
-    </div>
+    </div> -->
 
 
   </div>
@@ -290,7 +188,7 @@
               this.values.$remove(option)
           }
 
-          this.open = !this.open
+          // this.open = !this.open
 
       },
 
@@ -299,20 +197,20 @@
        * @param  {Object||String} option
        * @return {void}
        */
-       edit(option) {
-         if (! this.isOptionSelected(option) ) {
-           this.values.push(option)
-         } else {
-           this.values.$remove(option)
-         }
-
-         if( this.clearSearchOnSelect ) {
-           this.search = ''
-         }
-         this.editingOption = option
-
-         this.open = !this.open
-       },
+      //  edit(option) {
+      //    if (! this.isOptionSelected(option) ) {
+      //      this.values.push(option)
+      //    } else {
+      //      this.values.$remove(option)
+      //    }
+       //
+      //    if( this.clearSearchOnSelect ) {
+      //      this.search = ''
+      //    }
+      //    this.editingOption = option
+       //
+      //    this.open = !this.open
+      //  },
 
        /**
        * Toggle the visibility of the dropdown menu.
@@ -321,11 +219,16 @@
        */
        toggleDropdown( e ) {
          if(!this.editingOption) {
-           if( e.target === this.$els.openIndicator || e.target === this.$els.search || e.target === this.$els.toggle || e.target === this.$el ) {
+           if(
+             //e.target === this.$els.openIndicator ||
+             e.target === this.$els.search ||
+             e.target === this.$els.toggle ||
+             e.target === this.$el
+           ) {
+             console.log("clieck on " + this.open)
              if( this.open ) {
                this.$els.search.blur() // dropdown will close on blur
              } else {
-               this.open = true
                this.$els.search.focus()
              }
            }
@@ -437,7 +340,7 @@
        */
        maybeDeleteValue() {
          if( ! this.$els.search.value.length && this.values.length ) {
-           return this.value.pop()
+           return this.values.pop()
          }
        }
      },

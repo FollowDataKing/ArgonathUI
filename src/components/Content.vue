@@ -17,6 +17,12 @@
     <section class="content">
 
       <!-- Your Page Content Here -->
+      <router-view
+        class="view"
+        keep-alive
+        transition
+        transition-mode="in-out">
+      </router-view>
 
     </section>
     <!-- /.content -->
