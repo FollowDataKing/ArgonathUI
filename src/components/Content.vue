@@ -17,9 +17,16 @@
     <section class="content">
 
       <!-- Your Page Content Here -->
-
+      <Dashboard></Dashboard>
     </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
 </template>
+
+<script>
+  import Dashboard from "./Dashboard.vue"
+  export default {
+    components: [Dashboard]    
+  }
+</script>

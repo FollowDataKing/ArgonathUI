@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import Widget from "./Widget.vue"
+import Widget from "./Widget2.vue"
 
 export default {
   name: "Container",

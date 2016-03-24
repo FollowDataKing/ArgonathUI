@@ -14,6 +14,7 @@
   import Container from "./Container.vue"
 
   export default {
+    name: "Dashboard",
     components: {
       Container
     },
@@ -30,7 +31,7 @@
                   type: "table",
                   api: {
                     proto: "http",
-                    url: "http://data4:1060/statistics/query/payment"
+                    url: "http://139.129.96.38:1060/statistics/query/payment"
                   }
                 }
               }
