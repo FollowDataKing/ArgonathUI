@@ -11,18 +11,18 @@
     </div>
     <div class="box-body">
       <div class="chart">
-        <canvas :id="id" :style="{ height: height + 'px', width: width + 'px' }"></canvas>
+        <canvas :id="id" :style="{width:width + 'px', height:height + 'px'}"></canvas> <!--:style="{ height: height + 'px', width: width + 'px' }"-->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  var Chart = require('chart.js')
+  //var echarts = require('echarts')
+  var Chart = require("chart.js")
   export default {
     data () {
       return {
-        chartObj: null,
         chart: null
       }
     },
@@ -40,15 +40,15 @@
       },
       height: {
         type: Number,
-        default: 300
+        default: 200
       },
       width: {
         type: Number,
-        default: 300
+        default: 400
       },
       chartType: {
         type: String,
-        default: 'bar' // line, bar, pie
+        default: 'line' // line, bar, pie
       },
       chartData: {
         type: Object,
@@ -56,34 +56,32 @@
       }
     },
     ready () {
-      var chartCanvas = $("#"+this.id).get(0).getContext("2d")
-      this.chartObj = new Chart(chartCanvas)
+      var chartCanvas = document.getElementById(this.id).getContext("2d")
+      var chart = new Chart(chartCanvas)
       switch (this.chartType) {
-        case 'line':
-          this.chart = this.chartObj.Line(this.chartData);
+        case "line":
+          this.chart = chart.Line(this.chartData);
           break;
-        case 'bar':
-          this.chart = this.chartObj.Bar(this.chartData);
-          console.log(this.chart);
+        case "bar":
+          this.chart = chart.Bar(this.chartData);
           break;
-        case 'pie':
-          this.chart = this.chartObj.Pie(this.chartData);
+        case "pie":
+          this.chart = chart.Pie(this.chartData)
           break;
       }
     },
     methods: {
       checkout (e) {
         e.preventDefault()
-        console.log(11111)
-        //this.chart.clear()
+        this.chart.destroy()
+        var chartCanvas = document.getElementById(this.id).getContext("2d")
+        var chart = new Chart(chartCanvas)
         if (this.chartType === 'bar') {
           this.chartType = 'line'
-          this.chart.clear()
-          this.chartObj.Line(this.chartData)
+          this.chart = chart.Line(this.chartData)
         } else {
           this.chartType = 'bar'
-          this.chart.clear()
-          this.chartObj.Bar(this.chartData)
+          this.chart = chart.Bar(this.chartData)
         }
       }
     }
