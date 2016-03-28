@@ -4,15 +4,15 @@
   <span class="select2 select2-container select2-container--default select2-container--above" dir="ltr" style="width: 100%;">
     <span class="select2-selectione select2-selection--multiple clearfix" aria-expanded="false">
       <ul v-el:toggle @mousedown.prevent="toggleDropdown" class="select2-selection__rendered">
-        <li class="select2-selection__choice" v-for="option in values">
-          <span class="select2-selection__choice__remove"
-          role="presentation"
-          @click="unapplyFilter(option)">×</span>
-          {{ getOptionLabel(option) }}
-          {{" [" + (filterValues[getOptionValue(option)] ? filterValues[getOptionValue(option)] : "...") + "]" }}
+        <li v-for="filterKey in appliedFilters"
+          class="select2-selection__choice"
+          @click="unapplyFilter(filterKey)">
+          <span v-show="isFilterUnappliable(filterKey)" class="select2-selection__choice__remove" role="presentation">×</span>
+          {{ filterOptions[filterKey].label }}
+          {{" [" + (appliedFilterValues[filterKey] ? appliedFilterValues[filterKey] : "...") + "]" }}
         </li>
         <li class="select2-search select2-search--inline">
-          <input v-el:search v-show="searchable" v-model="search"
+          <input v-el:search v-show="true" v-model="search"
           @keyup.delete="maybeDeleteValue"
           @keyup.esc="onEscape"
           @keyup.up.prevent="typeAheadUp"
@@ -21,9 +21,9 @@
           @blur="open = false"
           @focus="open = true"
           :placeholder="searchPlaceholder"
-          :style="{ width: isValueEmpty ? '100%' : 'auto' }"
+          :style="{ width: isAppliedFiltersEmpty ? '100%' : 'auto' }"
           class="select2-search__field"
-          :disabled="editingOption" type="search" tabindex="-1" role="textbox">
+          :disabled="editingFilterKey" type="search" tabindex="-1" role="textbox">
         </li>
       </ul>
       <!-- <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span> -->
@@ -35,23 +35,25 @@
     <span class="select2-dropdown select2-dropdown--above">
       <span class="select2-results">
         <ul class="select2-results__options">
-          <li v-for="option in filteredOptions"
+          <li v-for="filterKey in filteredOptions"
+            v-if="isFilterAppliable(filterKey)"
             class="select2-results__option"
             :class="{ 'select2-results__option--highlighted': $index === typeAheadPointer }"
-            :aria-selected="isOptionSelected(option) ? 'true' : 'false'"
+            :aria-selected="isFilterApplied(filterKey) ? 'true' : 'false'"
+            :aria-disabled="isFilterApplied(filterKey) ? 'true' : 'false'"
             role="treeitem"
             @mouseover="typeAheadPointer = $index"
-            @mousedown.prevent="editFilter(option)">
-            {{ getOptionLabel(option) }}
-            <span style="float:right">{{ getOptionType(option) }}</span>
+            @mousedown.prevent="editFilter(filterKey)">
+            {{ filterOptions[filterKey].label }}
+            <span style="float:right">{{ filterOptions[filterKey].type }}</span>
           </li>
         </ul>
       </span>
     </span>
   </span>
 </div>
-<filter-editor v-if="editingOption"
-  :filter-type="getOptionType(editingOption)"
+<filter-editor v-if="editingFilterKey"
+  :filter-type="filterOptions[editingFilterKey].type"
   :on-change="updateOptionValue"
   :on-submit="applyEditingFilter"
   :on-cancel="unapplyEditingFilter">
@@ -69,100 +71,21 @@ export default {
   },
 
   props: {
-    /**
-    * Contains the currently selected value. Very similar to a
-    * `value` attribute on an <input>. In most cases, you'll want
-    * to set this as a two-way binding, using :value.sync. However,
-    * this will not work with Vuex, in which case you'll need to use
-    * the onChange callback property.
-    * @type {Object||String||null}
-    */
-    values: {
-      default () { return [] }
+    // The filter options to apply
+    filterOptions: {
+      default() { return {} },
     },
 
-    /**
-    * An array of strings or objects to be used as dropdown choices.
-    * If you are using an array of objects, vue-select will look for
-    * a `label` key (ex. [{label: 'This is Foo', value: 'foo', type: 'type'}]). A
-    * custom label key can be set with the `label` prop.
-    * @type {Object}
-    */
-    options: {
-      type: Array,
-      default() { return [] },
-    },
-
-    /**
-    * Sets the max-height property on the dropdown list.
-    * @deprecated
-    * @type {String}
-    */
     maxHeight: {
       type: String,
       default: '400px'
     },
 
-    searchable: {
-      type: Boolean,
-      default: true
-    },
-
-    /**
-    * Equivalent to the `placeholder` attribute on an `<input>`.
-    * @type {Object}
-    */
     placeholder: {
       type: String,
       default: ''
     },
 
-    /**
-    * Sets a Vue transition property on the `.dropdown-menu`. vue-select
-    * does not include CSS for transitions, you'll need to add them yourself.
-    * @type {String}
-    */
-    transition: {
-      type: String,
-      default: 'expand'
-    },
-
-    /**
-    * Enables/disables clearing the search text when an option is selected.
-    * @type {Boolean}
-    */
-    clearSearchOnSelect: {
-      type: Boolean,
-      default: true
-    },
-
-    /**
-    * Tells vue-select what key to use when generating option
-    * labels when each `option` is an object.
-    * @type {String}
-    */
-    labelKey: {
-      type: String,
-      default: 'label'
-    },
-
-    /**
-    * Tells vue-select what key to use when generating option
-    * types when each `option` is an object.
-    * @type {String}
-    */
-    typeKey: {
-      type: String,
-      default: 'type'
-    },
-
-    /**
-    * An optional callback function that is called each time the selected
-    * value(s) change. When integrating with Vuex, use this callback to trigger
-    * an action, rather than using :value.sync to retreive the selected value.
-    * @type {Function}
-    * @default {null}
-    */
     onFiltersChange: Function
   },
 
@@ -170,19 +93,16 @@ export default {
     return {
       search: '',
       open: false,
-      editingOption: undefined,
-      editingFilterValue: undefined,
-      filterValues: {},
+      editingFilterKey: undefined,
       typeAheadPointer: -1,
+      appliedFilters: [],
+      appliedFilterValues: {},
     }
   },
 
   watch: {
-    values(val, old) {
+    appliedFilters(val, old) {
       this.onChange && val !== old ? this.onChange(val) : null
-    },
-    options() {
-      this.$set('value', [])
     },
     filteredOptions() {
       this.typeAheadPointer = 0;
@@ -196,71 +116,109 @@ export default {
     * @param  {Object||String} option
     * @return {void}
     */
-    editFilter(option) {
-      if (this.isOptionSelected(option) ) {
+    editFilter(filterKey) {
+      if (this.isFilterApplied(filterKey) ) {
         alert("Cannot edit an applied filter!")
         return
       }
-      this.values.push(option)
-      console.log(this.values)
-      if( this.clearSearchOnSelect ) {
-        this.search = ''
+
+      var filter = this.filterOptions[filterKey]
+
+      // If filter has dependence, insert the filter right after its parent
+      if (filter.depend && this.isFilterApplied(filter.depend)) {
+        var insertIdx = this.appliedFilters.indexOf(filter.depend)
+        this.appliedFilters.splice(insertIdx + 1, 0, filterKey);
+      // else, append it directly
+      } else {
+        this.appliedFilters.push(filterKey)
       }
-      this.editingOption = option
+
+      this.editingFilterKey = filterKey
       this.open = false
+      this.search = ''
     },
 
     /**
     * The callback to trigger when editing filter value changed
     */
     updateOptionValue(val) {
-      var key = this.getOptionValue(this.editingOption)
-      this.$set("filterValues." + key, val)
+      this.$set("appliedFilterValues." + this.editingFilterKey, val)
     },
 
     applyEditingFilter() {
-      var key = this.getOptionValue(this.editingOption)
 
       //TODO apply the filter to dataset
 
-      this.editingOption = undefined
+      this.editingFilterKey = undefined
+    },
+
+    isFilterUnappliable(filterKey) {
+      // Check if the filter is already applied
+      if (! this.isFilterApplied(filterKey) ) {
+        return false
+      }
+
+      // While editing, only the editingFilterKey can be unapplied
+      if (this.editingFilterKey && this.editingFilterKey != filterKey) {
+        return false
+      }
+
+      for (var filterIdx in this.appliedFilters) {
+        var filterIter = this.appliedFilters[filterIdx]
+        if (filterIter != filterKey) {
+          var filterOption = this.filterOptions[filterIter]
+          if (filterOption.depend && filterOption.depend == filterKey) {
+            return false
+          }
+        }
+      }
+
+      return true
+    },
+
+    isFilterAppliable(filterKey) {
+      var option = this.filterOptions[filterKey]
+
+      // This filter is already applied
+      if (this.isFilterApplied(filterKey) ) {
+        return false
+      }
+
+      if (option.depend) {
+        return this.isFilterApplied(option.depend)
+      }
+
+      return true
     },
 
     unapplyEditingFilter() {
-      this.unapplyFilter(this.editingOption)
+      this.unapplyFilter(this.editingFilterKey)
     },
 
-    unapplyFilter(option) {
+    unapplyFilter(filterKey) {
       // Check if the filter is applied
-      if (! this.isOptionSelected(option) ) {
+      if (! this.isFilterApplied(filterKey) ) {
         alert("Cannot unapply a filter not applied!")
-        console.log(option)
         return
       }
 
-      var key = this.getOptionValue(option)
       // editing ...
-      if (this.editingOption) {
-        var editingKey = this.getOptionValue(this.editingOption)
+      if (this.editingFilterKey) {
 
-        if (editingKey != key) {
+        if (this.editingFilterKey != filterKey) {
           alert("Cannot unpply filter other than the editing one!")
-          console.log(editingKey)
-          console.log(key)
           return
         }
 
-        this.editingOption = undefined
+        this.editingFilterKey = undefined
       }
 
-      this.$set("filterValues." + key, undefined)
-      this.values.$remove(option)
-
+      this.$set("appliedFilterValues." + filterKey, undefined)
+      this.appliedFilters.$remove(filterKey)
     },
 
-    getOptionFilterValue(option) {
-      var key = this.getOptionValue(option)
-      return this.filterValues[key]
+    getOptionFilterValue(filterKey) {
+      return this.appliedFilterValues[filterKey]
     },
 
     /**
@@ -269,7 +227,7 @@ export default {
     * @return {void}
     */
     toggleDropdown( e ) {
-      if(!this.editingOption) {
+      if(!this.editingFilterKey) {
         if(
           //e.target === this.$els.openIndicator ||
           e.target === this.$els.search ||
@@ -290,58 +248,8 @@ export default {
     * @param  {Object||String}  option
     * @return {Boolean}         True when selected || False otherwise
     */
-    isOptionSelected( option ) {
-      return this.values.indexOf(option) !== -1
-    },
-
-    /**
-    * If the selected option has option['value'] return it.
-    * Otherwise, return the entire option.
-    * @param  {Object||String} option
-    * @return {Object||String}
-    */
-    getOptionValue( option ) {
-      if( typeof option === 'object' && option.value ) {
-        return option.value;
-      }
-
-      return option;
-    },
-
-    /**
-    * Generate the option label text. If {option}
-    * is an object, return option[this.labelKey].
-    *
-    * @param  {Object || String} option
-    * @return {String}
-    */
-    getOptionLabel( option ) {
-      if( typeof option === 'object' ) {
-        if( this.labelKey && option[this.labelKey] ) {
-          return option[this.labelKey];
-        } else if( option.label ) {
-          return option.label
-        }
-      }
-      return option;
-    },
-
-    getOptionLabelWithFilterValue( option ) {
-      var optionLabel = this.getOptionLabel( option )
-      var filterVal = this.getOptionFilterValue( option )
-
-      return optionLabel + (filterVal ? (" [" + filterVal + "]") : "")
-    },
-
-    getOptionType( option ) {
-      if( typeof option === 'object' ) {
-        if( this.typeKey && option[this.typeKey] ) {
-          return option[this.typeKey];
-        } else if( option.type ) {
-          return option.type
-        }
-      }
-      return "daterange";
+    isFilterApplied( filterKey ) {
+      return this.appliedFilters.indexOf(filterKey) !== -1
     },
 
     /**
@@ -369,12 +277,10 @@ export default {
     */
     typeAheadSelect() {
       if( this.filteredOptions[ this.typeAheadPointer ] ) {
-        this.select( this.filteredOptions[ this.typeAheadPointer ] );
+        this.editFilter( this.filteredOptions[ this.typeAheadPointer ] );
       }
 
-      if( this.clearSearchOnSelect ) {
-        this.search = "";
-      }
+      this.search = "";
     },
 
     /**
@@ -396,9 +302,8 @@ export default {
     * @return {this.value}
     */
     maybeDeleteValue() {
-      if( ! this.$els.search.value.length && this.values.length ) {
-        var toRemoveOption = this.values[this.values.length - 1]
-        this.unapplyFilter(toRemoveOption)
+      if( ! this.$els.search.value.length && this.appliedFilters.length ) {
+        this.unapplyFilter(this.appliedFilters[this.appliedFilters.length - 1])
       }
     }
   },
@@ -406,46 +311,35 @@ export default {
   computed: {
 
     /**
-    * Classes to be output on .dropdown
-    * @return {Object}
-    */
-    dropdownClasses() {
-      return {
-        open: this.open,
-        searchable: this.searchable
-      }
-    },
-
-    /**
     * Return the placeholder string if it's set
     * & there is no value selected.
     * @return {String} Placeholder text
     */
     searchPlaceholder() {
-      if( this.isValueEmpty && this.placeholder ) {
+      if( this.isAppliedFiltersEmpty && this.placeholder ) {
         return this.placeholder;
       }
     },
 
     /**
-    * The currently available options, filtered
+    * The currently available filterOptions, filtered
     * by the search elements value.
     * @return {[type]} [description]
     */
     filteredOptions() {
-      return this.$options.filters.filterBy(this.options, this.search)
+      return (this.$options.filters.filterBy(this.filterOptions, this.search).map(function(item) { return item.$key }))
     },
 
     /**
-    * Check if there aren't any options selected.
+    * Check if there aren't any filterOptions selected.
     * @return {Boolean}
     */
-    isValueEmpty() {
-      if( this.values ) {
-        if( typeof this.values === 'object' ) {
-          return ! Object.keys(this.values).length
+    isAppliedFiltersEmpty() {
+      if( this.appliedFilters ) {
+        if( typeof this.appliedFilters === 'object' ) {
+          return ! Object.keys(this.appliedFilters).length
         }
-        return ! this.values.length
+        return ! this.appliedFilters.length
       }
 
       return true;

@@ -1,9 +1,18 @@
 <template>
   <div class="input-group">
     <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-    <!-- <input type="text" placeholder="Type Message ..." class="form-control"> -->
-    <input type="text" class="form-control"
+    <input v-if="filterType=='daterange'" type="text" class="form-control"
       v-filter-value="filterValue">
+    <select v-if="filterType=='select'" class="form-control select2" style="width: 100%;"
+      v-filter-value="filterValue">
+      <option>Alabama</option>
+      <option>Alaska</option>
+      <option>California</option>
+      <option>Delaware</option>
+      <option>Tennessee</option>
+      <option>Texas</option>
+      <option>Washington</option>
+    </select>
     <span class="input-group-btn">
       <button type="button" class="btn btn-primary btn-flat"
         :disabled="!filterValue"
@@ -19,7 +28,8 @@
 
 <script>
 require("daterangepicker/daterangepicker-bs3.min.css")
-require("daterangepicker/daterangepicker.js")
+require("daterangepicker")
+require("select2")
 
 import moment from "moment"
 import { uuid } from "src/utils/uuid.js"
@@ -27,17 +37,13 @@ import { uuid } from "src/utils/uuid.js"
 export default {
 
   props: {
-    pid: {
-      type: String,
-      default: uuid(8,16)
+    filterType: {              // The data-type of this filter
+      type: String,            // The default value is 'select' (enumeration)
+      default: 'select'
     },
-    filterType: {
-      type: String,
-      default: 'text'
-    },
-    onChange: Function,
-    onSubmit: Function,
-    onCancel: Function
+    onChange: Function,        // The callback on the filter value changed
+    onSubmit: Function,        // The callback on the filter value submitted
+    onCancel: Function         // The callback on the filter editing cancelled
   },
 
   data () {
@@ -61,10 +67,12 @@ export default {
       bind: function () {
         var self = this;
 
+        // Access the component from the directive
         var filterType = this.vm.$data.filterType
 
+        // Initialize the input field via different filter type
+        // If the filter type if date range
         if (filterType == 'daterange') {
-
           $(self.el).daterangepicker({
             ranges: {
               'Today': [moment(), moment()],
@@ -82,6 +90,13 @@ export default {
             self.set(self.el.value)
           });
         }
+        else if (filterType == 'select') {
+          $(self.el).select2()
+          $(self.el).on('change', function() {
+            self.set(self.el.value)
+          })
+        }
+
         $(self.el).focus();
       },
       unbind: function () {
