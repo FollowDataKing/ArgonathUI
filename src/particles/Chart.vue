@@ -7,6 +7,7 @@
         </button>
         <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
       </div>
+      <a v-if="chartType !== 'pie'" href="#" @click="checkout">checkout</a>
     </div>
     <div class="box-body">
       <div class="chart">
@@ -20,7 +21,10 @@
   var Chart = require('chart.js')
   export default {
     data () {
-      return {}
+      return {
+        chartObj: null,
+        chart: null
+      }
     },
     props: {
       id: {
@@ -32,7 +36,7 @@
       },
       title: {
         type: String,
-        default: ''
+        default: 'This is Title'
       },
       height: {
         type: Number,
@@ -53,19 +57,34 @@
     },
     ready () {
       var chartCanvas = $("#"+this.id).get(0).getContext("2d")
-      var chart = new Chart(chartCanvas)
-      // console.log(chart)
-      // console.log(this.chartData)
+      this.chartObj = new Chart(chartCanvas)
       switch (this.chartType) {
         case 'line':
-          chart.Line(this.chartData);
+          this.chart = this.chartObj.Line(this.chartData);
           break;
         case 'bar':
-          chart.Bar(this.chartData);
+          this.chart = this.chartObj.Bar(this.chartData);
+          console.log(this.chart);
           break;
         case 'pie':
-          chart.Pie(this.chartData);
+          this.chart = this.chartObj.Pie(this.chartData);
           break;
+      }
+    },
+    methods: {
+      checkout (e) {
+        e.preventDefault()
+        console.log(11111)
+        //this.chart.clear()
+        if (this.chartType === 'bar') {
+          this.chartType = 'line'
+          this.chart.clear()
+          this.chartObj.Line(this.chartData)
+        } else {
+          this.chartType = 'bar'
+          this.chart.clear()
+          this.chartObj.Bar(this.chartData)
+        }
       }
     }
   }
