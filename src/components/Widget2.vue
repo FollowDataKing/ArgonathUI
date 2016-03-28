@@ -25,9 +25,9 @@
 
 <script>
 // import Chart from "chart.js"
-import Loading from "./particles/Loading.vue"
-import Dtable from "./particles/Table.vue"
-import FilterEditor from "./particles/FilterEditor.vue"
+import Loading from "../particles/Loading.vue"
+import Dtable from "../particles/Table.vue"
+import FilterEditor from "../particles/FilterEditor.vue"
 //import PathNav from "./particles/PathNav.vue"
 
 export default {
