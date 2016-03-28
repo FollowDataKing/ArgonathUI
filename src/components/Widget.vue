@@ -43,10 +43,10 @@
 require("daterangepicker/daterangepicker-bs3.min.css")
 
 // import Chart from "chart.js"
-import Loading from "./particles/Loading.vue"
-import ResponsiveTable from "./particles/ResponsiveTable.vue"
-import PathNav from "./particles/PathNav.vue"
-import FilterPanel from "./particles/FilterPanel.vue"
+import Loading from "../particles/Loading.vue"
+import ResponsiveTable from "../particles/ResponsiveTable.vue"
+import PathNav from "../particles/PathNav.vue"
+import FilterPanel from "../particles/FilterPanel.vue"
 
 // import moment from "moment"
 require("daterangepicker/daterangepicker.js")

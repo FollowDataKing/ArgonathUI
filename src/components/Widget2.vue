@@ -26,11 +26,11 @@
 
 <script>
 // import Chart from "chart.js"
-import Loading from "./particles/Loading.vue"
-import Dtable from "./particles/Table.vue"
-import FilterEditor from "./particles/FilterEditor.vue"
-import FilterPanel from "./particles/FilterPanel.vue"
-//import PathNav from "./particles/PathNav.vue"
+import Loading from "../particles/Loading.vue"
+import Dtable from "../particles/Table.vue"
+import FilterEditor from "../particles/FilterEditor.vue"
+import FilterPanel from "../particles/FilterPanel.vue"
+//import PathNav from "../particles/PathNav.vue"
 
 export default {
   props: {
