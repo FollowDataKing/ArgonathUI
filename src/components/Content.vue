@@ -15,7 +15,6 @@
 
     <!-- Main content -->
     <section class="content">
-
       <!-- Your Page Content Here -->
       <router-view
         class="view"
@@ -28,10 +27,3 @@
   </div>
   <!-- /.content-wrapper -->
 </template>
-
-<script>
-  import Dashboard from "./Dashboard.vue"
-  export default {
-    components: [Dashboard]    
-  }
-</script>

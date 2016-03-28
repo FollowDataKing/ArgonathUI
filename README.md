@@ -11,3 +11,11 @@ npm run dev
 # build:
 npm run build
 ```
+
+### Design
+
+![image](./doc/dashboard-sample.png)
+
+![image](./doc/widget-struct.png)
+
+![image](./doc/widget-sample.png)

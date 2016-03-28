@@ -4,13 +4,6 @@
     <Sider></Sider>
     <Content></Content>
     <Dfooter></Dfooter>
-    <!-- main view -->
-    <!--router-view
-      class="view"
-      keep-alive
-      transition
-      transition-mode="out-in">
-    </router-view-->
   </div>
 </template>
 

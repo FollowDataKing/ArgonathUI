@@ -1,5 +1,5 @@
 <template>
-  <div class="box" :class="box-style">
+  <div class="box" :class="boxStyle">
     <div class="box-header with-border">
       <h3 class="box-title" v-if="title">{{title}}</h3>
       <div class="box-tools pull-right">
@@ -10,18 +10,23 @@
     </div>
     <div class="box-body">
       <div class="chart">
-        <canvas id="{{id}}" :style="{ height: height + 'px', width: width + 'px' }"></canvas>
+        <canvas :id="id" :style="{ height: height + 'px', width: width + 'px' }"></canvas>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  var Chart = require('chart.js')
   export default {
     data () {
+      return {}
     },
     props: {
-      box-style: {
+      id: {
+        type: String
+      },
+      boxStyle: {
         type: String,
         default: 'box-info'
       },
@@ -31,35 +36,36 @@
       },
       height: {
         type: Number,
-        default: 250
+        default: 300
       },
       width: {
         type: Number,
         default: 300
       },
-      chart-type: {
+      chartType: {
         type: String,
-        default: 'line' // line, bar, pie
+        default: 'bar' // line, bar, pie
       },
-      chart-data: {
+      chartData: {
         type: Object,
         default: {}
       }
     },
     ready () {
-      var chartCanvas = $(this.id).get(0).getContext("2d");
-      var chart = new Chart(chartCanvas);
-
-      switch (this.type) {
+      var chartCanvas = $("#"+this.id).get(0).getContext("2d")
+      var chart = new Chart(chartCanvas)
+      // console.log(chart)
+      // console.log(this.chartData)
+      switch (this.chartType) {
         case 'line':
-          chart.Line(this.chart-data)
-          break
+          chart.Line(this.chartData);
+          break;
         case 'bar':
-          chart.Bar(this.chart-data)
-          break
+          chart.Bar(this.chartData);
+          break;
         case 'pie':
-          chart.pie()
-          break
+          chart.Pie(this.chartData);
+          break;
       }
     }
   }

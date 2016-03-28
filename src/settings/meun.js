@@ -10,7 +10,7 @@ module.exports = [
     child: [
       {
         name: 'General',
-        link: '/x',
+        link: '/chart',
         icon: 'fa-circle-o'
       },
       {

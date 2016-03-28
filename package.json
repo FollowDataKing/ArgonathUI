@@ -30,6 +30,7 @@
   "dependencies": {
     "admin-lte": "^2.3.2",
     "bootstrap": "^3.3.6",
+    "chart.js": "^1.0.2",
     "datatables.net": "^1.10.11",
     "datatables.net-bs": "^1.10.11",
     "daterangepicker": "0.0.3",
