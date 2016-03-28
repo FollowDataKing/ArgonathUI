@@ -1,6 +1,6 @@
 # ArgonathUI
 
-Data statistics dashboard tools depend [admin-lte](https://almsaeedstudio.com/) and [vue.js](http://cn.vuejs.org/).
+Data statistics dashboard depend on [admin-lte](https://almsaeedstudio.com/) and [vue.js](http://cn.vuejs.org/).
 
 ### Building
 

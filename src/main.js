@@ -4,7 +4,8 @@ import Resource from 'vue-resource'
 import { domain, fromNow } from './filters'
 import App from './components/App.vue'
 import Dashboard from './components/Dashboard.vue'
-import Chart from './components/TestChart.vue'
+import Test from './components/Test.vue'
+import AddPage from './view/config.vue'
 
 // install router
 Vue.use(Router)
@@ -23,8 +24,11 @@ router.map({
   '/dashboard': {
     component: Dashboard
   },
-  '/chart': {
-    component: Chart
+  '/test': {
+    component: Test
+  },
+  '/addpage': {
+    component: AddPage
   }
 })
 

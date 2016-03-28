@@ -1,24 +1,20 @@
 <template>
-  <div class="container-fluid">
+  <div>
     <Container
       v-for="row in rows"
       :model="row"
       :id="'' + $index">
     </Container>
-   <hr>
-   <p class="small text-muted">This is a status bar</a></p>
- </div>
+  </div>
 </template>
 
 <script>
   import Container from "./Container.vue"
-
   export default {
     name: "Dashboard",
     components: {
       Container
     },
-
     data () {
       return {
         rows : [
@@ -26,6 +22,32 @@
             columns: [
               {
                 width: 12,
+                widget: {
+                  height: 200,
+                  type: "table",
+                  api: {
+                    proto: "http",
+                    url: "http://139.129.96.38:1060/statistics/query/payment"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            columns: [
+              {
+                width: 6,
+                widget: {
+                  height: 200,
+                  type: "table",
+                  api: {
+                    proto: "http",
+                    url: "http://139.129.96.38:1060/statistics/query/payment"
+                  }
+                }
+              },
+              {
+                width: 6,
                 widget: {
                   height: 200,
                   type: "table",

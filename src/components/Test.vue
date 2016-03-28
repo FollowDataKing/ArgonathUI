@@ -1,12 +1,14 @@
 <template>
 <div>
-  <h1>Test Chart</h1>
-  <chart :id="'aaa'" :chart-data="data"></chart>
+  <h1>Test</h1>
+  <widget></widget>
+  <!-- <chart :id="'aaa'" :chart-data="data"></chart> -->
 </div>
 </template>
 
 <script>
   import chart from '../particles/Chart'
+  import widget from './Widget'
   export default {
     data () {
       return {
@@ -37,6 +39,6 @@
         }
       }
     },
-    components: {chart}
+    components: {chart, widget}
   }
 </script>

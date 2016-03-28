@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import Widget from "./Widget2.vue"
+import Widget from "./Widget.vue"
 
 export default {
   name: "Container",
@@ -57,6 +57,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

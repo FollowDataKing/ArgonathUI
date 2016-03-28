@@ -177,7 +177,6 @@
       }
     },
     ready () {
-      //console.log(this.img)
     }
   }
 </script>

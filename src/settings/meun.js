@@ -5,12 +5,17 @@ module.exports = [
     icon: 'fa-home'
   },
   {
+    name: 'Addpage',
+    link: '/addpage',
+    icon: 'fa-home'
+  },
+  {
     name: 'UI Elements',
     icon: 'fa-laptop',
     child: [
       {
         name: 'General',
-        link: '/chart',
+        link: '/test',
         icon: 'fa-circle-o'
       },
       {
