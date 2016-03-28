@@ -48,7 +48,7 @@ export default {
     }
   },
   ready () {
-    console.log('#tab-' + this.id)
+    // console.log('#tab-' + this.id)
     $('#tab-' + this.id).DataTable({
       "paging": true,
       "lengthChange": false,

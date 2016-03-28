@@ -8,7 +8,8 @@
       <Loading v-if="status == 'loading'"></Loading>
       <div v-else>
         <!-- <path-nav :path="['Home', 'Library', 'Data']"></path-nav> -->
-        <filter-editor></filter-editor>
+        <filter-panel :options="filterOptions" placeholder="Select filters ..."></filter-panel>
+
         <Dtable
         :id="id"
         :title="title"
@@ -28,6 +29,7 @@
 import Loading from "./particles/Loading.vue"
 import Dtable from "./particles/Table.vue"
 import FilterEditor from "./particles/FilterEditor.vue"
+import FilterPanel from "./particles/FilterPanel.vue"
 //import PathNav from "./particles/PathNav.vue"
 
 export default {
@@ -54,6 +56,18 @@ export default {
         dimension: "create_time",
         measures: [ "BALANCE", "ALIPAY", "TENPAY", "TENPAY2", "TOTAL" ]
       },
+      filterOptions: [
+        {
+          label: "日期范围",
+          type: "daterange",
+          value: "date",
+        },
+        {
+          label: "店铺",
+          type: "select",
+          value: "shop",
+        }
+      ],
       data: { },
       drilled: []
     }
@@ -88,12 +102,12 @@ export default {
   components: {
     Loading,
     Dtable,
-    FilterEditor
+    FilterEditor,
+    FilterPanel
     //PathNav
   },
 
   ready() {
-    console.log(Dtable);
     // GET request
     this.$http({url: this.model.api.url, method: 'GET'})
     .then(function (response) {
@@ -134,7 +148,7 @@ export default {
     }, function (response) {
       // error callback
       this.status = "error"
-      console.log(response)
+      // console.log(response)
     });
   },
 
