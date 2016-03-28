@@ -8,7 +8,7 @@
       <Loading v-if="status == 'loading'"></Loading>
       <div v-else>
         <!-- <path-nav :path="['Home', 'Library', 'Data']"></path-nav> -->
-        <filter-panel :options="filterOptions" placeholder="Select filters ..."></filter-panel>
+        <filter-panel :filter-options="filters" placeholder="Select filters ..."></filter-panel>
 
         <Dtable
         :id="id"
@@ -46,29 +46,29 @@ export default {
       scheme: {
         alias: {
           create_time: "日期",
+          city_code: "城市",
+          shop_area_code: "商圈",
+          shop_id: "店铺",
           BALANCE: "余额",
           ALIPAY: "支付宝",
           TENPAY: "微信",
           TENPAY2: "微信2",
-          TOTAL: "总额"
+          TOTAL: "总额",
         },
-        // groupBy: ["create_time"],
-        // filters: ["create_time", "city_code", "shop_area_code", "shop_id"],
+        drillers: ["year", "month", "date"],
+        filters: [
+          {
+            keys: ["create_time"],
+            type: "daterange"
+          },
+          {
+            keys: ["city_code", "shop_area_code", "shop_id"],
+            type: "select"
+          }
+        ],
         dimension: "create_time",
-        measures: [ "BALANCE", "ALIPAY", "TENPAY", "TENPAY2", "TOTAL" ]
+        measures: [ "BALANCE", "ALIPAY", "TENPAY", "TENPAY2", "TOTAL" ],
       },
-      filterOptions: [
-        {
-          label: "日期范围",
-          type: "daterange",
-          value: "date",
-        },
-        {
-          label: "店铺",
-          type: "select",
-          value: "shop",
-        }
-      ],
       data: { },
       drilled: []
     }
@@ -97,7 +97,28 @@ export default {
       }
 
       return cols
+    },
+    filters: function () {
+      var filters = {}
+      for (var filterIdx in this.scheme.filters) {
+        var filterToken = this.scheme.filters[filterIdx]
+        var parentKey = undefined
+        for (var nameIdx in filterToken.keys) {
+          var filterKey = filterToken.keys[nameIdx]
+          var filter = { label: this.scheme.alias[filterKey], type: filterToken.type }
+          if (parentKey) {
+            filter.depend = parentKey
+          }
+          parentKey = filterKey
+          filters[filterKey] = filter
+        }
+      }
+      return filters
     }
+  },
+
+  filters: {
+
   },
 
   components: {
@@ -109,48 +130,55 @@ export default {
   },
 
   ready() {
-    // GET request
-    this.$http({url: this.model.api.url, method: 'GET'})
-    .then(function (response) {
-      // success callback
+    this.loadData()
+  },
 
-      // var data = {
-      //   dimension: {
-      //     label: this.scheme.alias[this.scheme.dimension],
-      //     data: []
-      //   },
-      //   measures: {}
-      // }
-      //
-      // for (var idx in this.scheme.measures) {
-      //   var measure_key = this.scheme.measures[idx]
-      //   data.measures[measure_key] = {
-      //     label: this.scheme.alias[measure_key],
-      //     data: []
-      //   }
-      // }
-      //
-      // for (var idx in response.data) {
-      //   var item = response.data[idx]
-      //
-      //   for (var key in item) {
-      //     if (key == this.scheme.dimension) {
-      //       data.dimension.data.push(item[key])
-      //     }
-      //     else {
-      //       data.measures[key].data.push(item[key])
-      //     }
-      //   }
-      // }
-      // this.data = data
+  methods: {
+    loadData () {
+      this.status = "loading"
+      // GET request
+      this.$http({url: this.model.api.url, method: 'GET'})
+      .then(function (response) {
+        // success callback
 
-      this.data = response.data
-      this.status = "ready"
-    }, function (response) {
-      // error callback
-      this.status = "error"
-      // console.log(response)
-    });
+        // var data = {
+        //   dimension: {
+        //     label: this.scheme.alias[this.scheme.dimension],
+        //     data: []
+        //   },
+        //   measures: {}
+        // }
+        //
+        // for (var idx in this.scheme.measures) {
+        //   var measure_key = this.scheme.measures[idx]
+        //   data.measures[measure_key] = {
+        //     label: this.scheme.alias[measure_key],
+        //     data: []
+        //   }
+        // }
+        //
+        // for (var idx in response.data) {
+        //   var item = response.data[idx]
+        //
+        //   for (var key in item) {
+        //     if (key == this.scheme.dimension) {
+        //       data.dimension.data.push(item[key])
+        //     }
+        //     else {
+        //       data.measures[key].data.push(item[key])
+        //     }
+        //   }
+        // }
+        // this.data = data
+
+        this.data = response.data
+        this.status = "ready"
+      }, function (response) {
+        // error callback
+        this.status = "error"
+        // console.log(response)
+      });
+    }
   },
 
   events: {
