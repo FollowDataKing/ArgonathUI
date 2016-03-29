@@ -5,16 +5,15 @@
     </div>
     <div :id="'w-' + id" class="chart-stage">
       <!-- <img v-if="type == 'placeholder'" data-src="holder.js/100%x{{ height }}/white"> -->
+      <filter-panel :filter-options="filters" :on-filters-change="loadData" placeholder="Select filters ..."></filter-panel>
       <Loading v-if="status == 'loading'"></Loading>
       <div v-else>
-        <!-- <path-nav :path="['Home', 'Library', 'Data']"></path-nav> -->
-        <filter-panel :filter-options="filters" placeholder="Select filters ..."></filter-panel>
 
         <Dtable
         :id="id"
         :title="title"
         :columns="columns"
-        :records="data"></Dtable>
+        :records="data | applyFilter"></Dtable>
         <canvas v-if="type == 'chart'" id="myChart"></canvas>
       </div>
     </div>
@@ -59,18 +58,103 @@ export default {
         filters: [
           {
             keys: ["create_time"],
-            type: "daterange"
+            type: "daterange",
+            settings: {
+              create_time: {
+                date_format: 'YYYY-MM-DD'
+              }
+            }
           },
           {
             keys: ["city_code", "shop_area_code", "shop_id"],
-            type: "select"
+            type: "select",
+            settings: {
+              city_code: {
+                multiple: false,
+                options: {
+                  "杭州": 330100,
+                  "上海": 310000
+                }
+              },
+              shop_area_code: {
+                multiple: false,
+                option_api: {
+                  url: "http://139.129.96.38:5001/api/v1.0/areas/{city_code}",
+                  label: "shop_area_name",
+                  value: "shop_area_id"
+                }
+              },
+              shop_id: {
+                multiple: false,
+                option_api: {
+                  url: "http://139.129.96.38:5001/api/v1.0/shops/{shop_area_code}",
+                  label: "shop_name",
+                  value: "shop_id"
+                }
+              }
+            }
           }
         ],
         dimension: "create_time",
         measures: [ "BALANCE", "ALIPAY", "TENPAY", "TENPAY2", "TOTAL" ],
+        postFilters: {
+          create_time: "ts2date",
+          BALANCE: {
+            name: "currency",
+            args: ["￥"]
+          },
+          ALIPAY: {
+            name: "currency",
+            args: ["￥"]
+          },
+          TENPAY: {
+            name: "currency",
+            args: ["￥"]
+          },
+          TENPAY2: {
+            name: "currency",
+            args: ["￥"]
+          },
+          TOTAL: {
+            name: "currency",
+            args: ["￥"]
+          }
+        }
       },
       data: { },
       drilled: []
+    }
+  },
+
+  filters: {
+    applyFilter (records) {
+      var newRecords = []
+      for (var recordIdx in records) {
+        var record = records[recordIdx]
+        var newRecord = {}
+
+        for (var colName in record) {
+          if (this.scheme.postFilters[colName]) {
+            var postFilter = this.scheme.postFilters[colName]
+            var postFilterKey = postFilter
+            var postFilterArgs = undefined
+
+            if (typeof postFilter == "object") {
+              postFilterKey = postFilter.name
+              postFilterArgs = postFilter.args
+            }
+
+            // newRecord[colName] = (this.$options.filters[postFilter] || Vue.options.filters[postFilter])(record[colName])
+            newRecord[colName] = postFilterArgs ? (this.$options.filters[postFilterKey])(record[colName], postFilterArgs[0])
+              : (this.$options.filters[postFilterKey])(record[colName])
+          } else {
+            newRecord[colName] = record[colName]
+          }
+        }
+
+        newRecords.push(newRecord)
+      }
+      return newRecords
     }
   },
 
@@ -105,7 +189,7 @@ export default {
         var parentKey = undefined
         for (var nameIdx in filterToken.keys) {
           var filterKey = filterToken.keys[nameIdx]
-          var filter = { label: this.scheme.alias[filterKey], type: filterToken.type }
+          var filter = { label: this.scheme.alias[filterKey], type: filterToken.type, settings: filterToken.settings[filterKey] }
           if (parentKey) {
             filter.depend = parentKey
           }
@@ -116,11 +200,6 @@ export default {
       return filters
     }
   },
-
-  filters: {
-
-  },
-
   components: {
     Loading,
     Dtable,
@@ -134,43 +213,27 @@ export default {
   },
 
   methods: {
-    loadData () {
+    loadData (filters) {
+
+      var dataUrl = this.model.api.url
+
+      if (filters && Object.keys(filters).length) {
+        var paramStr = ""
+        for (var filterKey in filters) {
+          var filterVal = filters[filterKey]
+          if (!filterVal) continue
+          paramStr += filterKey + "=" + filterVal + "&"
+        }
+        paramStr = paramStr.slice(0, paramStr.length - 1)
+        dataUrl += "?" + paramStr
+      }
+      console.log("access " + dataUrl)
+
       this.status = "loading"
       // GET request
-      this.$http({url: this.model.api.url, method: 'GET'})
+      this.$http({url: dataUrl, method: 'GET'})
       .then(function (response) {
         // success callback
-
-        // var data = {
-        //   dimension: {
-        //     label: this.scheme.alias[this.scheme.dimension],
-        //     data: []
-        //   },
-        //   measures: {}
-        // }
-        //
-        // for (var idx in this.scheme.measures) {
-        //   var measure_key = this.scheme.measures[idx]
-        //   data.measures[measure_key] = {
-        //     label: this.scheme.alias[measure_key],
-        //     data: []
-        //   }
-        // }
-        //
-        // for (var idx in response.data) {
-        //   var item = response.data[idx]
-        //
-        //   for (var key in item) {
-        //     if (key == this.scheme.dimension) {
-        //       data.dimension.data.push(item[key])
-        //     }
-        //     else {
-        //       data.measures[key].data.push(item[key])
-        //     }
-        //   }
-        // }
-        // this.data = data
-
         this.data = response.data
         this.status = "ready"
       }, function (response) {

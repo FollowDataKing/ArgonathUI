@@ -1,29 +1,7 @@
-const urlParser = document.createElement('a')
-
-export function domain (url) {
-  urlParser.href = url
-  return urlParser.hostname
-}
-
-export function fromNow (time) {
-  const between = Date.now() / 1000 - Number(time)
-  if (between < 3600) {
-    return pluralize(~~(between / 60), ' minute')
-  } else if (between < 86400) {
-    return pluralize(~~(between / 3600), ' hour')
-  } else {
-    return pluralize(~~(between / 86400), ' day')
-  }
-}
-
-function pluralize(time, label) {
-    if (time === 1) {
-        return time + label
-    }
-
-    return time + label + 's';
-}
-
-function colorstr(scheme, trans) {
-  return "rgba(" + scheme.join(", ") + ", " + trans + ")"
+export function ts2date (timestamp) {
+  let date_obj = new Date(timestamp)
+  let year = date_obj.getFullYear()
+  let month = date_obj.getMonth() + 1
+  let day = date_obj.getDate()
+  return year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day)
 }
