@@ -52,8 +52,8 @@
     </span>
   </span>
 </div>
-<filter-editor v-if="editingFilterKey"
-  :filter-type="filterOptions[editingFilterKey].type"
+<filter-editor v-if="editingFilterKey && !refreshing"
+  :model="filterOptions[editingFilterKey]"
   :on-change="updateOptionValue"
   :on-submit="applyEditingFilter"
   :on-cancel="unapplyEditingFilter">
@@ -64,10 +64,12 @@
 
 <script>
 import FilterEditor from "./FilterEditor.vue"
+import Loading from "./Loading.vue"
 
 export default {
   components: {
-    FilterEditor
+    FilterEditor,
+    Loading
   },
 
   props: {
@@ -97,6 +99,7 @@ export default {
       typeAheadPointer: -1,
       appliedFilters: [],
       appliedFilterValues: {},
+      refreshing: false
     }
   },
 
@@ -138,6 +141,56 @@ export default {
       this.search = ''
     },
 
+    refeshFilters(appliedFilter) {
+      this.refreshing = true
+
+      for (var filterKey in this.filterOptions) {
+        if (this.isFilterApplied(filterKey))
+          continue
+        var filter = this.filterOptions[filterKey]
+        if (filter.depend == appliedFilter) {
+
+          if (!filter.settings.option_api)
+            continue
+
+          var url = filter.settings.option_api.url.replace("{" + appliedFilter + "}", this.appliedFilterValues[appliedFilter])
+
+          console.log("refreshing " + filterKey + " via url " + url + "...")
+
+          var bindModel = { vm: this, filterKey: filterKey}
+
+          this.$http({url: url, method: 'GET'})
+          .then(function (response) {
+
+            var filterKey = this.filterKey
+            var filter = this.vm.filterOptions[filterKey]
+            var labelKey = filter.settings.option_api.label
+            var valueKey = filter.settings.option_api.value
+
+            // success callback
+            var optionList = JSON.parse(response.data)
+            var options = {}
+            for (var optionIdx in optionList) {
+              var option = optionList[optionIdx]
+              var optionLabel = option[labelKey]
+              var optionValue = option[valueKey]
+              options[optionLabel] = optionValue
+            }
+
+            console.log(options)
+
+            this.vm.$set("filterOptions." + filterKey + "." + "settings.options", options)
+            console.log(this.vm.filterOptions[filterKey])
+
+          }.bind(bindModel), function (response) {
+            // error callback
+          });
+        }
+      }
+
+      this.refreshing = false
+    },
+
     /**
     * The callback to trigger when editing filter value changed
     */
@@ -145,9 +198,28 @@ export default {
       this.$set("appliedFilterValues." + this.editingFilterKey, val)
     },
 
+    unapplyEditingFilter() {
+      this.unapplyFilter(this.editingFilterKey)
+    },
+
+    unapplyFilter(filterKey) {
+      if (!this.isFilterUnappliable(filterKey))
+        return
+        
+      this.editingFilterKey = undefined
+
+      delete this.appliedFilterValues[filterKey]
+      this.appliedFilters.$remove(filterKey)
+      this.onFiltersChange(this.appliedFilterValues)
+    },
+
     applyEditingFilter() {
 
       //TODO apply the filter to dataset
+      console.log("apply the filter " + this.editingFilterKey + "[" + this.appliedFilterValues[this.editingFilterKey] + "]")
+
+      this.onFiltersChange(this.appliedFilterValues)
+      this.refeshFilters(this.editingFilterKey)
 
       this.editingFilterKey = undefined
     },
@@ -191,31 +263,7 @@ export default {
       return true
     },
 
-    unapplyEditingFilter() {
-      this.unapplyFilter(this.editingFilterKey)
-    },
 
-    unapplyFilter(filterKey) {
-      // Check if the filter is applied
-      if (! this.isFilterApplied(filterKey) ) {
-        alert("Cannot unapply a filter not applied!")
-        return
-      }
-
-      // editing ...
-      if (this.editingFilterKey) {
-
-        if (this.editingFilterKey != filterKey) {
-          alert("Cannot unpply filter other than the editing one!")
-          return
-        }
-
-        this.editingFilterKey = undefined
-      }
-
-      this.$set("appliedFilterValues." + filterKey, undefined)
-      this.appliedFilters.$remove(filterKey)
-    },
 
     getOptionFilterValue(filterKey) {
       return this.appliedFilterValues[filterKey]

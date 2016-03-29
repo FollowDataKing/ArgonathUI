@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Resource from 'vue-resource'
-import { domain, fromNow } from './filters'
+import { ts2date } from './filters'
 import App from './components/App.vue'
 import Dashboard from './components/Dashboard.vue'
 import Test from './components/Test.vue'
@@ -14,8 +14,7 @@ Vue.use(Resource)
 Vue.config.debug = true
 
 // register filters globally
-Vue.filter('fromNow', fromNow)
-Vue.filter('domain', domain)
+Vue.filter('ts2date', ts2date)
 
 // routing
 var router = new Router()
