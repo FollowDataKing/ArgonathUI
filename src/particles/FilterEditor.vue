@@ -61,7 +61,9 @@ export default {
 
         // Access the component from the directive
         var filter =  this.vm.$data.model
+        console.log(filter)
         var filterType = filter.type
+
 
         // Initialize the input field via different filter type
         // If the filter type if date range

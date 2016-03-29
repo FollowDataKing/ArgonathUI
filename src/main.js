@@ -21,7 +21,7 @@ var router = new Router()
 
 router.map({
   '/dashboard': {
-    component: Test
+    component: Dashboard
   },
   '/test': {
     component: Test
