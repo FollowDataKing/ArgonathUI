@@ -2,7 +2,7 @@
 <div>
   <h1>Test</h1>
   <widget></widget>
-  <!-- <chart :id="'aaa'" :chart-data="data"></chart> -->
+  <chart :id="'aaa'" :chart-data="data"></chart>
 </div>
 </template>
 

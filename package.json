@@ -51,6 +51,7 @@
     "vue-resource": "^0.7.0",
     "vue-router": "^0.7.5",
     "vue-select": "github:sagalbot/vue-select",
-    "vue-strap": "^1.0.7"
+    "vue-strap": "^1.0.7",
+    "vue-waterfall": "^0.2.1"
   }
 }
