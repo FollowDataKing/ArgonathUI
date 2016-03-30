@@ -1,13 +1,13 @@
 <template>
   <div class="chart">
-    <div>
+    <div class="pull-left">
       <template v-for="column in columns">
         <input type="checkbox" :value="$index" :id="column['key']" v-model="checked" v-if="$index!==0">
         <label :for="column['key']" v-if="$index!==0">{{column['label']}}</label>
       </template>
       {{checked | json}}
     </div>
-    <div id="legend" class="chart-legend"></div>
+    <div id="legend" class="chart-legend" class="pull-right"></div>
     <canvas :id="id" :style="{width:width + 'px', height:height + 'px'}"></canvas>
   </div>
 </template>
@@ -104,6 +104,9 @@
 </script>
 
 <style>
+.chart-legend ul {
+  list-style-type: none;
+}
 .chart-legend li {
   float: right;
   margin: 5px;

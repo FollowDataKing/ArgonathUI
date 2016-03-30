@@ -139,6 +139,7 @@ export default {
       this.editingFilterKey = filterKey
       this.open = false
       this.search = ''
+      console.log(this.filterOptions);
     },
 
     refeshFilters(appliedFilter) {

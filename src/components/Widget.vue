@@ -98,7 +98,6 @@ export default {
 
   methods: {
     loadData (filters) {
-
       var dataUrl = this.config.api.url
 
       if (filters && Object.keys(filters).length) {

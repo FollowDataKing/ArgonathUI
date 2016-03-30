@@ -19,6 +19,7 @@
         <i class="fa fa-close"></i>
       </button>
     </span>
+  </div>
 </template>
 
 <script>
@@ -51,6 +52,7 @@ export default {
   },
 
   ready() {
+    console.log(this.model)
   },
 
   directives : {
@@ -58,10 +60,8 @@ export default {
       twoWay: true,
       bind: function () {
         var self = this;
-
         // Access the component from the directive
-        var filter =  this.vm.$data.model
-        console.log(filter)
+        var filter =  this.vm.model
         var filterType = filter.type
 
 

@@ -19,7 +19,7 @@ router.map({
   '/dashboard': {
     component: Dashboard
   },
-  '/config': {
+  '/configure': {
     component: Configure
   }
 })
