@@ -1,79 +1,50 @@
 <template>
-  <div id="responsive-tables">
-    <table class="col-md-12 table-bordered table-striped table-condensed cf">
-      <thead class="cf">
-        <tr>
-          <th v-for="column in columns">{{column.label}}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(recordIdx, record) in pagedRecords">
-          <td
-            v-for="column in columns"
-            data-title="{{column.label}}"
-            @dblclick="dblclicked(column, record)">
-            {{record[column.key]}}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <Pagination :index-size="indexSize" :total-pages="totalPages"></Pagination>
-  </div>
+<div id="responsive-tables">
+  <table :id="'tab-' + id" class="table table-bordered table-striped cf">
+    <thead class="cf">
+      <tr>
+        <th v-for="column in columns">{{column.label}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(recordIdx, record) in data">
+        <td
+          v-for="column in columns"
+          data-title="{{column.label}}"
+          @dblclick="dblclicked(column, record)">
+          {{record[column.key]}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 </template>
 
 <script>
-import Pagination from "./Pagination.vue"
-
+require("datatables.net-bs/css/dataTables.bootstrap.css")
+require("datatables.net")
+require("datatables.net-bs/js/dataTables.bootstrap.js")
 export default {
-  name: "ResponsiveTable",
   props: {
+    id: String,
     columns: Array,
-    records: Array,
-    itemsPerPage: {
-      type: Number,
-      default: 10
-    },
-    maxIndexSize: {
-      type: Number,
-      default: 8
-    }
-  },
-
-  components: {
-    Pagination
+    data: Array
   },
 
   data () {
     return {
-      currentPage: 1
     }
   },
-
-  computed: {
-    startIndex: function () {
-      return (this.currentPage - 1) * this.itemsPerPage
-    },
-
-    indexSize: function() {
-      return Math.min(this.maxIndexSize, this.totalPages)
-    },
-
-    totalPages: function() {
-      return Math.ceil(this.records.length / this.itemsPerPage)
-    },
-
-    pagedRecords: function() {
-      return this.records.slice(this.startIndex, this.startIndex + this.itemsPerPage - 1)
-    },
-
+  ready () {
+    $('#tab-' + this.id).DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false
+    });
   },
-
-  events: {
-    'setPageTo': function (newPage) {
-      this.currentPage = newPage
-    }
-  },
-
   methods: {
     dblclicked: function(column, row) {
       this.$dispatch('dblclickedOnTableCell', column, row)

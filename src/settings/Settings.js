@@ -17,5 +17,47 @@ export default {
     [130, 192, 175],
     [218, 212, 185],
     [216, 179, 104]
+  ],
+  chartStyle: [
+    {
+      fillColor: "rgba(91, 73, 71,0.2)",
+      strokeColor: "rgba(91, 73, 71,1)",
+      pointColor: "rgba(91, 73, 71,1)",
+      pointStrokeColor: "#fff",
+      pointHighlightFill: "#fff",
+      pointHighlightStroke: "rgba(91, 73, 71,1)"
+    },
+    {
+      fillColor: "rgba(151,187,205,0.2)",
+      strokeColor: "rgba(151,187,205,1)",
+      pointColor: "rgba(151,187,205,1)",
+      pointStrokeColor: "#fff",
+      pointHighlightFill: "#fff",
+      pointHighlightStroke: "rgba(151,187,205,1)"
+    },
+    {
+      fillColor: "rgba(0, 146, 199,0.2)",
+      strokeColor: "rgba(0, 146, 199,1)",
+      pointColor: "rgba(0, 146, 199,1)",
+      pointStrokeColor: "#fff",
+      pointHighlightFill: "#fff",
+      pointHighlightStroke: "rgba(0, 146, 199,1)"
+    },
+    {
+      fillColor: "rgba(243, 229, 154,0.2)",
+      strokeColor: "rgba(243, 229, 154,1)",
+      pointColor: "rgba(243, 229, 154,1)",
+      pointStrokeColor: "#fff",
+      pointHighlightFill: "#fff",
+      pointHighlightStroke: "rgba(243, 229, 154,1)"
+    },
+    {
+      fillColor: "rgba(216, 179, 104,0.2)",
+      strokeColor: "rgba(216, 179, 104,1)",
+      pointColor: "rgba(216, 179, 104,1)",
+      pointStrokeColor: "#fff",
+      pointHighlightFill: "#fff",
+      pointHighlightStroke: "rgba(216, 179, 104,1)"
+    }
   ]
 }

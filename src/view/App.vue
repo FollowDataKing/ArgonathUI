@@ -19,14 +19,11 @@
   import "bootstrap"
   import "admin-lte/dist/js/app.min.js"
   // load components
-  import Dheader from "./Header.vue"
-  import Sider from "./Sider.vue"
-  import Content from "./Content.vue"
-  import Dfooter from "./Footer.vue"
+  import Dheader from "../components/Header.vue"
+  import Sider from "../components/Sider.vue"
+  import Content from "../components/Content.vue"
+  import Dfooter from "../components/Footer.vue"
   export default {
     components: {Dheader, Sider, Content, Dfooter}
   }
 </script>
-
-<style>
-</style>

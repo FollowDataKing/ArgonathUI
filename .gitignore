@@ -1,6 +1,4 @@
 build/
 node_modules/
 npm-debug.log
-1
 .idea/
-test.html

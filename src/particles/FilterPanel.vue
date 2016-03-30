@@ -1,5 +1,5 @@
 <template>
-<div>
+<div style="margin-bottom:10px">
 <div class="dropdown">
   <span class="select2 select2-container select2-container--default select2-container--above" dir="ltr" style="width: 100%;">
     <span class="select2-selectione select2-selection--multiple clearfix" aria-expanded="false">
@@ -205,7 +205,7 @@ export default {
     unapplyFilter(filterKey) {
       if (!this.isFilterUnappliable(filterKey))
         return
-        
+
       this.editingFilterKey = undefined
 
       delete this.appliedFilterValues[filterKey]
