@@ -10,12 +10,12 @@
         :filter-options="filters"
         :on-filters-change="loadData">
       </filter-panel>
-      <Loading v-if="status === 'loading'"></Loading>
+      <Loading v-if="status == 'loading'"></Loading>
       <Tabset v-else>
         <Tab v-for="vistype in config.vistypes"
           :header="vistype">
-          <responsive-table v-if="vistype == 'table'" :data="data" :columns="columns" :id="'tab-' + id"></responsive-table>
-          <Chart v-else :type="vistype" :data="data" :columns="columns" :id="vistype + '-' + id"></Chart>
+          <responsive-table v-if="vistype == 'table'" :data="localStore[vistype]" :columns="columns" :id="'tab-' + id"></responsive-table>
+          <Chart v-else :type="vistype" :data="localStore[vistype]" :columns="columns" :id="vistype + '-' + id"></Chart>
         </Tab>
       </Tabset>
     </div>
@@ -33,6 +33,7 @@ import Tab from "../particles/Tab"
 import Tabset from "../particles/Tabset"
 
 export default {
+
   props: {
     id: String,                 // The id of this widget
     config: Object,
@@ -41,11 +42,13 @@ export default {
       default: "box-info"
     },
   },
+  
   data () {
     return {
       scheme: this.config.scheme,
       status: "loading",
       data: {},
+      localStore: {},
       drilled: []
     }
   },
@@ -130,14 +133,6 @@ export default {
       .then(function (response) {
         // success callback
         this.data = response.data
-        this.status = "ready"
-        this.localStore = {}
-        // if (this.type === 'table') {
-        //   this.localStore[this.type] = this.applyFilter(this.data, this.scheme['postFilters'][this.type])
-        // } else if (this.type === 'line' || this.type === 'bar') {
-        //   this.localStore[this.type] = this.applyFilter(this.data, this.scheme['postFilters'][this.type])
-        //   this.localStore[this.type] = this.transDataForChart(this.localStore[this.type])
-        // }
 
         this.localStore['table'] = this.applyFilter(this.data, this.scheme['postFilters']['table'])
         this.localStore['line'] = this.applyFilter(this.data, this.scheme['postFilters']['line'])
@@ -145,7 +140,9 @@ export default {
         this.localStore['bar'] = this.applyFilter(this.data, this.scheme['postFilters']['bar'])
         this.localStore['bar'] = this.transDataForChart(this.localStore['bar'])
 
-        console.log(this.localStore['bar'])
+        console.log(this.localStore)
+        this.status = "ready"
+
       }, function (response) {
         // error callback
         this.status = "error"

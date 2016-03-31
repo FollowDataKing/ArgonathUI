@@ -4,7 +4,7 @@ var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 var ROOT_PATH = path.resolve(__dirname);
-var SRC_PATH = path.resolve(__dirname, 'src');
+var SRC_PATH = path.resolve(__dirname, 'client');
 var BUILD_PATH = path.resolve(__dirname, 'build');
 
 module.exports = {
@@ -62,7 +62,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Argonath UI',
       filename: 'index.html',
-      template: 'src/index.html',
+      template: SRC_PATH + '/index.html',
       inject: true
     }),
     new webpack.ProvidePlugin({
