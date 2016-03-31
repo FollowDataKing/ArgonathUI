@@ -1,16 +1,20 @@
 # ArgonathUI
 
-Data statistics dashboard depend on [admin-lte](https://almsaeedstudio.com/) and [vue.js](http://cn.vuejs.org/).
+Data statistics dashboard depend on [admin-lte](https://almsaeedstudio.com/), [vue.js](http://cn.vuejs.org/) and [Meteor](https://www.meteor.com/).
 
 ### Building
 
 ``` bash
+meteor add webpack:webpack
+
+meteor add webpack:vue
+
 npm install
-# watch:
-npm run dev
-# build:
-npm run build
+
+meteor
 ```
+
+ignore the webpack.config.js.
 
 ### Design
 

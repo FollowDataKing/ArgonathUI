@@ -28,7 +28,7 @@ require("daterangepicker")
 require("select2")
 
 import moment from "moment"
-import { uuid } from "src/utils/uuid.js"
+import { uuid } from "../utils/uuid.js"
 
 export default {
 
