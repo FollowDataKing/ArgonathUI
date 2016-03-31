@@ -43,11 +43,7 @@
       this.config = [{
       title: "This is a title",
       width: 12,
-      components: [
-        {type:'line',component:'Chart'},
-        {type:'table',component:'ResponsiveTable'},
-        {type:'bar',component:'Chart'}
-      ],
+      vistypes: ['table', 'line', 'bar'],
       api: {
         proto: "http",
         url: "http://139.129.96.38:1060/statistics/query/payment?from_time=1445702400000&to_time=1446220800000"
