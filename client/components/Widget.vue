@@ -2,21 +2,24 @@
   <div class="box" :class="style">
     <div class="box-header with-border">
       <i class="ion ion-clipboard"></i>
-      <h3 class="box-title">{{title}}</h3>
-      <div class="btn-group pull-right" role="group" aria-label="...">
-        <button type="button" class="btn btn-default" @click="check(item)" v-for="item in config.components">{{item['type']}}</button>
-      </div>
+      <!-- <h3 class="box-title">{{title}}</h3> -->
+      <h3 class="box-title">测试控件</h3>
     </div>
-    <div class="box-body" :id="'w-' + id">
-      <filter-panel :filter-options="filters" :on-filters-change="loadData" placeholder="Select filters ..."></filter-panel>
-      <Loading v-if="status === 'loading'"></Loading>
-      <div v-else>
-        <component :is="currentView" :type="type" :data="localStore[type]" :id="'c-' + id" :columns="columns">
-        </component>
-      </div>
+    <div class="box-body">
+      <filter-panel  placeholder="Select filters ..."
+        :filter-options="filters"
+        :on-filters-change="loadData">
+      </filter-panel>
+      <Loading v-if="status == 'loading'"></Loading>
+      <Tabset v-else>
+        <Tab v-for="vistype in config.vistypes"
+          :header="vistype">
+          <responsive-table v-if="vistype == 'table'" :data="localStore[vistype]" :columns="columns" :id="'tab-' + id"></responsive-table>
+          <Chart v-else :type="vistype" :data="localStore[vistype]" :columns="columns" :id="vistype + '-' + id"></Chart>
+        </Tab>
+      </Tabset>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -26,25 +29,27 @@ import FilterPanel from "../particles/FilterPanel.vue"
 import ResponsiveTable from "../particles/ResponsiveTable.vue"
 import Chart from "../particles/Chart.vue"
 import Setting from "../settings/Settings"
+import Tab from "../particles/Tab"
+import Tabset from "../particles/Tabset"
 
 export default {
+
   props: {
+    id: String,                 // The id of this widget
+    config: Object,
     style: {
       type: String,
       default: "box-info"
     },
-    config: Object,
-    id: String
   },
+  
   data () {
     return {
-      currentView: this.config.components[0]['component'],
-      status: "loading",
-      type:this.config.components[0]['type'],
-      data: {},
-      drilled: [],
       scheme: this.config.scheme,
-      localStore: {}
+      status: "loading",
+      data: {},
+      localStore: {},
+      drilled: []
     }
   },
 
@@ -66,14 +71,20 @@ export default {
 
       return cols
     },
+
+    /**
+     * Get the filter map from the specified *scheme* section
+     */
     filters: function () {
       var filters = {}
-      for (var filterIdx in this.scheme.filters) {
-        var filterToken = this.scheme.filters[filterIdx]
+      for (let filterToken of this.scheme.filters) {
         var parentKey = undefined
-        for (var nameIdx in filterToken.keys) {
-          var filterKey = filterToken.keys[nameIdx]
-          var filter = { label: this.scheme.alias[filterKey], type: filterToken.type, settings: filterToken.settings[filterKey] }
+        for (let filterKey of filterToken.keys) {
+          var filter = {
+            label: this.scheme.alias[filterKey],
+            type: filterToken.type,
+            settings: filterToken.settings[filterKey]
+          }
           if (parentKey) {
             filter.depend = parentKey
           }
@@ -84,12 +95,15 @@ export default {
       return filters
     }
   },
+
   components: {
     Loading,
     ResponsiveTable,
     FilterEditor,
     FilterPanel,
-    Chart
+    Chart,
+    Tabset,
+    Tab
   },
 
   ready() {
@@ -108,7 +122,8 @@ export default {
           paramStr += filterKey + "=" + filterVal + "&"
         }
         paramStr = paramStr.slice(0, paramStr.length - 1)
-        dataUrl += "?" + paramStr
+        // dataUrl += "?" + paramStr
+        dataUrl += "&" + paramStr
       }
       console.log("access " + dataUrl)
 
@@ -118,14 +133,16 @@ export default {
       .then(function (response) {
         // success callback
         this.data = response.data
+
+        this.localStore['table'] = this.applyFilter(this.data, this.scheme['postFilters']['table'])
+        this.localStore['line'] = this.applyFilter(this.data, this.scheme['postFilters']['line'])
+        this.localStore['line'] = this.transDataForChart(this.localStore['line'])
+        this.localStore['bar'] = this.applyFilter(this.data, this.scheme['postFilters']['bar'])
+        this.localStore['bar'] = this.transDataForChart(this.localStore['bar'])
+
+        console.log(this.localStore)
         this.status = "ready"
-        this.localStore = {}
-        if (this.type === 'table') {
-          this.localStore[this.type] = this.applyFilter(this.data, this.scheme['postFilters'][this.type])
-        } else if (this.type === 'line' || this.type === 'bar') {
-          this.localStore[this.type] = this.applyFilter(this.data, this.scheme['postFilters'][this.type])
-          this.localStore[this.type] = this.transDataForChart(this.localStore[this.type])
-        }
+
       }, function (response) {
         // error callback
         this.status = "error"
@@ -194,18 +211,6 @@ export default {
         datasets: datasets
       }
     },
-    check (item) {
-      this.currentView = item['component']
-      this.type = item['type']
-      if (!this.localStore[this.type]) {
-        if (this.type === 'table') {
-          this.localStore[this.type] = this.applyFilter(this.data, this.scheme['postFilters'][this.type])
-        } else if (this.type === 'line' || this.type === 'bar') {
-          this.localStore[this.type] = this.applyFilter(this.data, this.scheme['postFilters'][this.type])
-          this.localStore[this.type] = this.transDataForChart(this.localStore[this.type])
-        }
-      }
-    }
   },
 
   events: {

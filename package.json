@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Data statistics dashboard depend on admin-lte,vue.js and meteor",
   "scripts": {
-    "start": "meteor run"
+    "start": "meteor run",
+    "dev": "webpack-dev-server --inline --hot --no-info",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "main": "server/main.js",
   "browser": "client/main.js",
