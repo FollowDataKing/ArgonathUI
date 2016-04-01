@@ -6,6 +6,7 @@
 </template>
 
 <script>
+  var $ = require("jquery")
   require("morris.js/morris.css")
   require('imports?jQuery=jquery,Raphael=webpack-raphael!morris.js/morris.js');
 
