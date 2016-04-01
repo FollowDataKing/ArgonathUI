@@ -21,6 +21,7 @@
 </template>
 
 <script>
+var $ = require("jquery")
 require("datatables.net-bs/css/dataTables.bootstrap.css")
 require("datatables.net")
 require("datatables.net-bs/js/dataTables.bootstrap.js")

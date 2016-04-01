@@ -23,6 +23,7 @@
 </template>
 
 <script>
+var $ = require("jquery")
 require("daterangepicker/daterangepicker-bs3.min.css")
 require("daterangepicker")
 require("select2")
