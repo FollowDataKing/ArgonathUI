@@ -12,10 +12,15 @@
       </filter-panel>
       <Loading v-if="status == 'loading'"></Loading>
       <Tabset v-else>
-        <Tab v-for="vistype in config.vistypes"
+        <!-- <Tab v-for="vistype in config.vistypes"
           :header="vistype">
           <responsive-table v-if="vistype == 'table'" :data="localStore[vistype]" :columns="columns" :id="'tab-' + id"></responsive-table>
           <Chart v-else :type="vistype" :data="localStore[vistype]" :columns="columns" :id="vistype + '-' + id"></Chart>
+        </Tab> -->
+        <Tab v-for="vistype in config.vistypes"
+          :header="vistype">
+          <responsive-table v-if="vistype == 'table'" :data="localStore[vistype]" :columns="columns" :id="'table-' + id"></responsive-table>
+          <Morris v-else :id="vistype + '-'+id" :type="vistype" :data="data" :columns="columns"></Morris>
         </Tab>
       </Tabset>
     </div>
@@ -31,6 +36,7 @@ import Chart from "../particles/Chart.vue"
 import Setting from "../settings/Settings"
 import Tab from "../particles/Tab"
 import Tabset from "../particles/Tabset"
+import Morris from "../particles/Morris"
 
 export default {
 
@@ -42,7 +48,7 @@ export default {
       default: "box-info"
     },
   },
-  
+
   data () {
     return {
       scheme: this.config.scheme,
@@ -103,7 +109,8 @@ export default {
     FilterPanel,
     Chart,
     Tabset,
-    Tab
+    Tab,
+    Morris
   },
 
   ready() {
