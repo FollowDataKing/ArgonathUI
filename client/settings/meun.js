@@ -1,12 +1,12 @@
 module.exports = [
   {
     name: 'Dashboard',
-    link: '/dashboard',
+    link: '/app/dashboard',
     icon: 'fa-home'
   },
   {
     name: 'Configure',
-    link: '/configure',
+    link: '/app/configure',
     icon: 'fa-home'
   }
 ]

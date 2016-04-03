@@ -42,7 +42,7 @@ export default {
       default: "box-info"
     },
   },
-  
+
   data () {
     return {
       scheme: this.config.scheme,
@@ -76,6 +76,7 @@ export default {
      * Get the filter map from the specified *scheme* section
      */
     filters: function () {
+      console.log(this.scheme.filters);
       var filters = {}
       for (let filterToken of this.scheme.filters) {
         var parentKey = undefined
@@ -140,7 +141,6 @@ export default {
         this.localStore['bar'] = this.applyFilter(this.data, this.scheme['postFilters']['bar'])
         this.localStore['bar'] = this.transDataForChart(this.localStore['bar'])
 
-        console.log(this.localStore)
         this.status = "ready"
 
       }, function (response) {

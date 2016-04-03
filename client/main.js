@@ -1,26 +1,44 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Resource from 'vue-resource'
+var VueValidator = require('vue-validator')
 import { ts2date } from './filters'
+import Root from './view/Root'
 import App from './view/App'
+import Register from './view/Register'
+import Login from './view/Login'
 import Dashboard from './view/Dashboard'
 import Configure from './view/Configure'
 
 Vue.use(Router)
 Vue.use(Resource)
+Vue.use(VueValidator)
 
 Vue.config.debug = true
 
 Vue.filter('ts2date', ts2date)
 
-var router = new Router()
+export var router = new Router()
 
 router.map({
-  '/dashboard': {
-    component: Dashboard
+  '/register': {
+    component: Register,
+    name: 'register'
   },
-  '/configure': {
-    component: Configure
+  '/login': {
+    component: Login,
+    name: 'login'
+  },
+  '/app': {
+    component: App,
+    subRoutes: {
+      '/dashboard': {
+        component: Dashboard
+      },
+      '/configure': {
+        component: Configure
+      }
+    }
   }
 })
 
@@ -28,8 +46,4 @@ router.beforeEach(function () {
   window.scrollTo(0, 0)
 })
 
-router.redirect({
-  '*': '/dashboard'
-})
-
-router.start(App, '#app')
+router.start(Root, '#app')
