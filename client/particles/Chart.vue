@@ -5,9 +5,8 @@
         <input type="checkbox" :value="$index" :id="column['key']" v-model="checked" v-if="$index!==0">
         <label :for="column['key']" v-if="$index!==0">{{column['label']}}</label>
       </template>
-      {{checked | json}}
     </div>
-    <div id="legend" class="chart-legend" class="pull-right"></div>
+    <div :id="'legend-'+id" class="chart-legend pull-right"></div>
     <canvas :id="id" :style="{width:width + 'px', height:height + 'px'}"></canvas>
   </div>
 </template>
@@ -57,7 +56,7 @@
           this.chart = chart.Pie(this.data, this.options)
           break;
       }
-      document.getElementById('legend').innerHTML = this.chart.generateLegend();
+      document.getElementById('legend-'+this.id).innerHTML = this.chart.generateLegend();
     },
     methods: {
       checkout (e) {
@@ -106,10 +105,12 @@
 <style>
 .chart-legend ul {
   list-style-type: none;
+  padding: 0px;
 }
 .chart-legend li {
   float: right;
   margin: 5px;
+  margin-left: 0px;
 }
 .chart-legend li span{
   display: inline-block;

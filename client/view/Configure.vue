@@ -35,8 +35,7 @@
           </label>
         </div>
         <textarea class="textarea" placeholder="Config Json" v-model="conf" v-validate:conf="{
-          required:{rule:true,message:'conf is required'},
-          validconf: {}
+          required:{rule:true,message:'conf is required'}
         }"
           style="width: 100%; height: 330px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;margin-top:10px;">
         </textarea>
@@ -52,7 +51,6 @@
 
 <script>
 import {Dashboards} from '../../imports/api/dashboard'
-var fJSON = require("fbbk-json")
 export default {
   data () {
     return {
@@ -62,32 +60,17 @@ export default {
       dashboards: []
     }
   },
-  validators: {
-    validconf:
-    {
-      message: "conf is not json",
-      check:function (val) {
-        //console.log(val)
-        try {
-          let conf = fJSON.parse(this.conf)
-          console.log(conf)
-        } catch(e) {
-          console.log(e)
-            return false
-        }
-        return true
-      }
-    }
-  },
   methods: {
     addDashboard: function () {
-      let conf = fJSON.parse(this.conf)
-      console.log(conf);
+      let conf = JSON.parse(this.conf)
       let dataObject = {
         title: this.title,
         vistypes: this.components
       }
       Meteor.call("dashboards.insert", Object.assign(dataObject, conf))
+      this.title = ""
+      this.components = []
+      this.conf = ""
     },
     removeDashboard: function (id) {
       Meteor.call("dashboards.remove", id)

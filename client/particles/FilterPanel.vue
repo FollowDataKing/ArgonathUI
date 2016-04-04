@@ -102,7 +102,6 @@ export default {
       refreshing: false
     }
   },
-
   watch: {
     appliedFilters(val, old) {
       this.onChange && val !== old ? this.onChange(val) : null

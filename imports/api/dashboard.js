@@ -20,7 +20,6 @@ Meteor.methods({
     if (! Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
-    console.log(conf);
     Dashboards.insert({
       conf:conf,
       createdAt: new Date(),

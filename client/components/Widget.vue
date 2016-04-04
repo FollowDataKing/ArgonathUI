@@ -1,47 +1,44 @@
 <template>
   <div class="box" :class="style">
-    <div class="box-header with-border">
-      <i class="ion ion-clipboard"></i>
-      <!-- <h3 class="box-title">{{title}}</h3> -->
-      <h3 class="box-title">测试控件</h3>
+    <div class="box-header">
+      <button @click="loadData">Reload</button>
     </div>
     <div class="box-body">
       <filter-panel  placeholder="Select filters ..."
         :filter-options="filters"
         :on-filters-change="loadData">
       </filter-panel>
-      <Loading v-if="status == 'loading'"></Loading>
+      <Loading v-if="status === 'loading'"></Loading>
       <Tabset v-else>
-        <!-- <Tab v-for="vistype in config.vistypes"
-          :header="vistype">
-          <responsive-table v-if="vistype == 'table'" :data="localStore[vistype]" :columns="columns" :id="'tab-' + id"></responsive-table>
-          <Chart v-else :type="vistype" :data="localStore[vistype]" :columns="columns" :id="vistype + '-' + id"></Chart>
-        </Tab> -->
         <Tab v-for="vistype in config.vistypes"
+          :header="vistype">
+          <responsive-table v-if="vistype === 'table'" :data="localStore[vistype]" :columns="columns" :id="'table-' + id"></responsive-table>
+          <Chart v-else :type="vistype" :data="localStore[vistype]" :columns="columns" :id="vistype + '-' + id"></Chart>
+        </Tab>
+        <!-- <Tab v-for="vistype in config.vistypes"
           :header="vistype">
           <responsive-table v-if="vistype == 'table'" :data="localStore[vistype]" :columns="columns" :id="'table-' + id"></responsive-table>
           <Morris v-else :id="vistype + '-'+id" :type="vistype" :data="data" :columns="columns"></Morris>
-        </Tab>
+        </Tab> -->
       </Tabset>
     </div>
   </div>
 </template>
 
 <script>
-import Loading from "../particles/Loading.vue"
-import FilterEditor from "../particles/FilterEditor.vue"
-import FilterPanel from "../particles/FilterPanel.vue"
-import ResponsiveTable from "../particles/ResponsiveTable.vue"
-import Chart from "../particles/Chart.vue"
+import Loading from "../particles/Loading"
+import FilterEditor from "../particles/FilterEditor"
+import FilterPanel from "../particles/FilterPanel"
+import ResponsiveTable from "../particles/ResponsiveTable"
+import Chart from "../particles/Chart"
 import Setting from "../settings/Settings"
 import Tab from "../particles/Tab"
 import Tabset from "../particles/Tabset"
 import Morris from "../particles/Morris"
 
 export default {
-
   props: {
-    id: String,                 // The id of this widget
+    id: String,
     config: Object,
     style: {
       type: String,
@@ -82,7 +79,6 @@ export default {
      * Get the filter map from the specified *scheme* section
      */
     filters: function () {
-      console.log(this.scheme.filters);
       var filters = {}
       for (let filterToken of this.scheme.filters) {
         var parentKey = undefined
@@ -116,6 +112,7 @@ export default {
 
   ready() {
     this.loadData()
+    console.log(this.data);
   },
 
   methods: {

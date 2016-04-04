@@ -9,6 +9,7 @@ import Register from './view/Register'
 import Login from './view/Login'
 import Dashboard from './view/Dashboard'
 import Configure from './view/Configure'
+import { Template } from 'meteor/templating'
 
 Vue.use(Router)
 Vue.use(Resource)
@@ -46,4 +47,10 @@ router.beforeEach(function () {
   window.scrollTo(0, 0)
 })
 
+router.redirect({
+  "*": "/app/dashboard"
+})
+
+//Template.body.onRendered(function () {
 router.start(Root, '#app')
+//})
