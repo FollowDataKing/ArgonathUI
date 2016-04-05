@@ -13,7 +13,10 @@
       "ALIPAY": "支付宝",
       "TENPAY": "微信",
       "TENPAY2": "微信2",
-      "TOTAL": "总额"
+      "TOTAL": "总额",
+      "year": "年",
+      "month": "月",
+      "date": "日"
     },
     "drillers": [
       "year",

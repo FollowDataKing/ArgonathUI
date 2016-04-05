@@ -1,11 +1,14 @@
 <template>
-<div>
   <ol v-if="path.length > 0" class="breadcrumb">
-    <li v-for="token in path">
-      <a href="#">{{token}}</a>
+    <li v-for="token in path"
+      :class="{active: $index == activeIndex}"
+      @click.prevent="activateItem($index)">
+      <a href="#" v-if="$index != activeIndex">{{token}}</a>
+      <span v-else>
+        {{token}}
+      </span>
     </li>
   </ol>
-</div>
 </template>
 
 <script>
@@ -15,14 +18,25 @@ export default {
     path: {
       type: Array,
       default: function () { return [] }
-    }
+    },
+
+    activeIndex: {
+      type: Number,
+      default: 0
+    },
+
+    itemActivated: Function
   },
 
-  data() {
-    return {
-      selected: null,
-      options: ['foo','bar','baz']
+  methods: {
+    activateItem (idx) {
+      if (this.activeIndex != idx) {
+        this.activeIndex = idx
+        if (this.itemActivated) {
+          this.itemActivated(idx)
+        }
+      }
     }
-  },
+  }
 }
 </script>

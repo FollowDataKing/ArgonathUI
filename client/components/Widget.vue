@@ -8,6 +8,7 @@
         :filter-options="filters"
         :on-filters-change="loadData">
       </filter-panel>
+      <path-nav :path="drilledLabels" v-if="drilled.length > 0" :item-activated="drillTo"></path-nav>
       <Loading v-if="status === 'loading'"></Loading>
       <Tabset v-else>
         <Tab v-for="vistype in config.vistypes"
@@ -15,11 +16,6 @@
           <responsive-table v-if="vistype === 'table'" :data="localStore[vistype]" :columns="columns" :id="'table-' + id"></responsive-table>
           <Chart v-else :type="vistype" :data="localStore[vistype]" :columns="columns" :id="vistype + '-' + id"></Chart>
         </Tab>
-        <!-- <Tab v-for="vistype in config.vistypes"
-          :header="vistype">
-          <responsive-table v-if="vistype == 'table'" :data="localStore[vistype]" :columns="columns" :id="'table-' + id"></responsive-table>
-          <Morris v-else :id="vistype + '-'+id" :type="vistype" :data="data" :columns="columns"></Morris>
-        </Tab> -->
       </Tabset>
     </div>
   </div>
@@ -27,8 +23,8 @@
 
 <script>
 import Loading from "../particles/Loading"
-import FilterEditor from "../particles/FilterEditor"
 import FilterPanel from "../particles/FilterPanel"
+import PathNav from "../particles/PathNav"
 import ResponsiveTable from "../particles/ResponsiveTable"
 import Chart from "../particles/Chart"
 import Setting from "../settings/Settings"
@@ -75,6 +71,11 @@ export default {
       return cols
     },
 
+    drilledLabels: function () {
+      var alias = this.scheme.alias
+      return this.drilled.map(function (key) { return alias[key] })
+    },
+
     /**
      * Get the filter map from the specified *scheme* section
      */
@@ -102,8 +103,8 @@ export default {
   components: {
     Loading,
     ResponsiveTable,
-    FilterEditor,
     FilterPanel,
+    PathNav,
     Chart,
     Tabset,
     Tab,
@@ -215,12 +216,18 @@ export default {
         datasets: datasets
       }
     },
+
+    drillTo (idx) {
+      this.drilled = this.scheme.drillers.slice(0, idx + 1)
+      console.log(this.drilled)
+    }
   },
 
   events: {
     'dblclickedOnTableCell': function (column, row) {
       if (column.key == this.scheme.dimension) {
         console.log("dblclicked on dimension: " + column.key)
+        this.drillTo(this.drilled.length)
       }
     }
   }
