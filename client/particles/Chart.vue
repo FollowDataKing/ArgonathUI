@@ -1,9 +1,11 @@
 <template>
   <div class="chart">
-    <div class="pull-left">
+    <div class="pull-right">
       <template v-for="column in columns">
-        <input type="checkbox" :value="$index" :id="column['key']" v-model="checked" v-if="$index!==0">
-        <label :for="column['key']" v-if="$index!==0">{{column['label']}}</label>
+        <span v-if="$index!==0" :style="{color: data.datasets[$index - 1].strokeColor}">
+          <input type="checkbox" :value="$index" :id="column['key']" v-model="checked">
+          <label :for="column['key']">{{column['label']}}</label>
+        </span>
       </template>
     </div>
     <div :id="'legend-'+id" class="chart-legend pull-right"></div>
@@ -19,7 +21,7 @@
         checked: [],
         chart: null,
         renderData: {},
-        options:{ legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"}
+        //options:{ legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"}
       }
     },
     props: {
@@ -47,31 +49,21 @@
       var chart = new Chart(chartCanvas)
       switch (this.type) {
         case "line":
-          this.chart = chart.Line(this.data, this.options);
+          // this.chart = chart.Line(this.data, this.options);
+          this.chart = chart.Line(this.data);
           break;
         case "bar":
-          this.chart = chart.Bar(this.data, this.options)
+          // this.chart = chart.Bar(this.data, this.options)
+          this.chart = chart.Bar(this.data)
           break;
         case "pie":
-          this.chart = chart.Pie(this.data, this.options)
+          // this.chart = chart.Pie(this.data, this.options)
+          this.chart = chart.Pie(this.data)
           break;
       }
-      document.getElementById('legend-'+this.id).innerHTML = this.chart.generateLegend();
+      // document.getElementById('legend-'+this.id).innerHTML = this.chart.generateLegend();
     },
     methods: {
-      checkout (e) {
-        e.preventDefault()
-        this.chart.destroy()
-        var chartCanvas = document.getElementById(this.id).getContext("2d")
-        var chart = new Chart(chartCanvas)
-        if (this.type === 'bar') {
-          this.type = 'line'
-          this.chart = chart.Line(this.data)
-        } else {
-          this.type = 'bar'
-          this.chart = chart.Bar(this.data)
-        }
-      }
     },
     watch: {
       'checked': function (val, oldVal) {
